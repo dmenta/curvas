@@ -16,6 +16,12 @@ const tip = document.getElementById('tip');
  */
 
 /**
+ * @typedef {Object} CurveState
+ * @property {Point} h1
+ * @property {Point} h2
+ * @property {number} steps
+ */
+/**
  * @typedef {Object} State
  * @property {string|null} drag
  * @property {boolean} shiftPressed
@@ -27,9 +33,9 @@ const state = {
 
 /**
  *
- * @returns {Handlers}
+ * @returns {CurveState}
  */
-function getHandlers() {
+function getCurveState() {
     return {
         h1: {
             x: +h1x.value,
@@ -39,15 +45,8 @@ function getHandlers() {
             x: +h2x.value,
             y: +h2y.value,
         },
+        steps: +steps.value,
     };
-}
-
-/**
- *
- * @returns {Point[]}
- */
-function getCurrentPoints() {
-    return bezierPoints(getHandlers(), +steps.value);
 }
 
 /**
@@ -82,9 +81,11 @@ function addEventListeners() {
 function addPanelControlsEvents() {
     document
         .querySelectorAll('input[type=range]')
-        .forEach((x) => x.addEventListener('input', draw));
+        .forEach((x) => x.addEventListener('input', () => draw(getCurveState())));
 
-    [showPoints, showSegments].forEach((x) => x.addEventListener('input', draw));
+    [showPoints, showSegments].forEach((x) =>
+        x.addEventListener('input', () => draw(getCurveState())),
+    );
 
     showGrid.addEventListener('input', () => (grid.style.display = showGrid.checked ? '' : 'none'));
 
@@ -108,13 +109,13 @@ function addHandlersEvents() {
     h1Grip.addEventListener('dblclick', () => {
         h1x.value = 0;
         h1y.value = 30;
-        draw();
+        draw(getCurveState());
     });
 
     h2Grip.addEventListener('dblclick', () => {
         h2x.value = 100;
         h2y.value = 30;
-        draw();
+        draw(getCurveState());
     });
 }
 
@@ -149,7 +150,7 @@ function addPointerEvents() {
         tip.style.top = e.clientY + 12 + 'px';
         tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
 
-        draw();
+        draw(getCurveState());
     });
 
     window.addEventListener('pointerup', () => {
@@ -160,7 +161,7 @@ function addPointerEvents() {
 
 function addCopyEvents() {
     copyJson.onclick = () =>
-        copyWithFeedback(copyJson, JSON.stringify(getCurrentPoints(), null, 2));
+        copyWithFeedback(copyJson, JSON.stringify(bezierPoints(getCurveState()), null, 2));
 
     copyCss.onclick = () =>
         copyWithFeedback(
@@ -171,4 +172,4 @@ function addCopyEvents() {
 
 addEventListeners();
 applyTheme();
-draw();
+draw(getCurveState());

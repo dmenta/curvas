@@ -1,7 +1,5 @@
 :root {
   --grid: #c8c8c8;
-  --h1-color: orange;
-  --h2-color: deepskyblue;
   --curve-color: oklch(80.765% 0.22372 140.8);
   --point-color: oklch(70.552% 0.15701 251.023);
   --segment-color: #303030;

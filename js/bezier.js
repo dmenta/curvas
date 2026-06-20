@@ -15,21 +15,20 @@ function round(v) {
 
 /**
  *
- * @param {Handlers} handlers
- * @param {number} steps
+ * @param {CurveState} curveState
  * @returns {Point[]}
  */
-function bezierPoints(handlers, steps) {
+function bezierPoints(curveState) {
     let pts = [];
-    for (let t = 0; t <= steps; t++) {
-        let tn = t / steps,
-            ti = (steps - t) / steps;
+    for (let t = 0; t <= curveState.steps; t++) {
+        let tn = t / curveState.steps,
+            ti = (curveState.steps - t) / curveState.steps;
         let f1 = 3 * ti * ti * tn;
         let f2 = 3 * ti * tn * tn;
         let f3 = tn * tn * tn;
         pts.push({
-            x: round(f1 * handlers.h1.x + f2 * handlers.h2.x + f3 * 100),
-            y: round(f1 * handlers.h1.y + f2 * handlers.h2.y + f3 * 100),
+            x: round(f1 * curveState.h1.x + f2 * curveState.h2.x + f3 * 100),
+            y: round(f1 * curveState.h1.y + f2 * curveState.h2.y + f3 * 100),
         });
     }
     return pts;

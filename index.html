@@ -15,19 +15,41 @@
         <div class="row">
             <div class="card">
                 <h2>Bezier Visualizer v3.2</h2>
-                <label>Inicial X<input id="h1x" type="range" min="0" max="100" value="0" /></label>
-                <label>Inicial Y<input id="h1y" type="range" min="0" max="100" value="30" /></label>
-                <label>Final X<input id="h2x" type="range" min="0" max="100" value="100" /></label>
-                <label>Final Y<input id="h2y" type="range" min="0" max="100" value="30" /></label>
-                <label>Steps<input id="steps" type="range" min="2" max="100" value="20" /></label>
+                <label for="h1x"
+                    ><span>X<sub>i</sub></span
+                    ><input id="h1x" class="h1" type="range" min="0" max="100" value="0"
+                /></label>
+                <label for="h1y"
+                    ><span>Y<sub>i</sub></span
+                    ><input id="h1y" class="h1" type="range" min="0" max="100" value="30"
+                /></label>
+                <label for="h2x"
+                    ><span>X<sub>f</sub></span
+                    ><input id="h2x" class="h2" type="range" min="0" max="100" value="100"
+                /></label>
+                <label for="h2y"
+                    ><span>Y<sub>f</sub></span
+                    ><input id="h2y" class="h2" type="range" min="0" max="100" value="30"
+                /></label>
+                <label for="steps"
+                    >Steps<input id="steps" type="range" min="2" max="100" value="20"
+                /></label>
 
                 <hr />
 
-                <label><input id="showGrid" type="checkbox" checked /> Grilla</label>
-                <label><input id="showCurve" type="checkbox" checked /> Curva</label>
-                <label><input id="showSegments" type="checkbox" /> Segmentos</label>
-                <label><input id="showPoints" type="checkbox" /> Puntos</label>
-                <label><input id="showHandles" type="checkbox" checked /> Líneas de control</label>
+                <div class="row">
+                    <label><input id="showGrid" type="checkbox" checked /> Grilla</label>
+                    <label><input id="showCurve" type="checkbox" checked /> Curva</label>
+                </div>
+                <div class="row">
+                    <label><input id="showSegments" type="checkbox" /> Segmentos</label>
+                    <label><input id="showPoints" type="checkbox" /> Puntos</label>
+                </div>
+                <div class="row">
+                    <label
+                        ><input id="showHandles" type="checkbox" checked /> Líneas de control</label
+                    >
+                </div>
 
                 <hr />
 
