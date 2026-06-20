@@ -32,17 +32,16 @@ window.addEventListener('keyup', (e) => {
     if (e.key === 'Shift') state.shiftPressed = false;
 });
 
-[h1, h2].forEach((el) =>
+[h1Grip, h2Grip].forEach((el) =>
     el.addEventListener('pointerdown', () => {
         state.drag = el.id;
-        setActiveHandler(state.drag);
     }),
 );
 
 window.addEventListener('pointermove', (e) => {
     if (!state.drag) return;
     let p = svgPos(e);
-    if (state.drag === 'h1') {
+    if (state.drag === 'h1Grip') {
         h1x.value = p.x;
         h1y.value = p.y;
     } else {
@@ -58,17 +57,16 @@ window.addEventListener('pointermove', (e) => {
 
 window.addEventListener('pointerup', () => {
     state.drag = null;
-    setActiveHandler(null);
     tip.style.display = 'none';
 });
 
-h1.addEventListener('dblclick', () => {
+h1Grip.addEventListener('dblclick', () => {
     h1x.value = 0;
     h1y.value = 30;
     draw();
 });
 
-h2.addEventListener('dblclick', () => {
+h2Grip.addEventListener('dblclick', () => {
     h2x.value = 100;
     h2y.value = 30;
     draw();
@@ -84,5 +82,4 @@ copyCss.onclick = () =>
         `cubic-bezier(${(+h1x.value / 100).toFixed(2)}, ${(+h1y.value / 100).toFixed(2)}, ${(+h2x.value / 100).toFixed(2)}, ${(+h2y.value / 100).toFixed(2)})`,
     );
 
-buildGrid();
 draw();

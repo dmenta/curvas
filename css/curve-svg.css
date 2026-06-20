@@ -1,0 +1,118 @@
+:root {
+  --grid: #c8c8c8;
+  --h1-color: orange;
+  --h2-color: deepskyblue;
+}
+
+body.dark {
+  --grid: #666;
+}
+
+svg {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  user-select: none;
+}
+
+text {
+  pointer-events: none;
+  user-select: none;
+  fill: var(--fg)
+}
+
+.grid-min-line {
+  stroke: var(--grid);
+  stroke-dasharray: .5 1;
+  stroke-width: 0.15;
+}
+
+
+.grid-maj-line {
+  stroke: var(--grid);
+  stroke-width: 0.25;
+}
+
+.grid-axis-value {
+  font-size: .15em;
+  opacity: .85;
+  font-weight: 300;
+}
+
+
+.handler-line {
+  stroke-width: 0.35;
+}
+
+#h1Line {
+  stroke: var(--h1-color);
+}
+
+#h2Line {
+  stroke: var(--h2-color);
+}
+
+
+@keyframes pulseHalo {
+  0% {
+    opacity: .25;
+  }
+
+  50% {
+    opacity: .65;
+  }
+
+  100% {
+    opacity: .25;
+  }
+}
+
+.handler-values {
+  font-size: .15em;
+  fill: var(--fg);
+}
+
+
+#h1Grip {
+  color: var(--h1-color);
+}
+
+#h2Grip {
+  color: var(--h2-color);
+}
+
+#handlerGrip {
+
+  &:active {
+
+    .handler-grip-halo {
+      animation: pulseHalo 1.2s infinite;
+    }
+
+    .handler-grip-point {
+      cursor: grabbing;
+      r: 2.8;
+    }
+  }
+
+  &:not(:active):hover .handler-grip-point {
+    filter: brightness(1.15);
+    r: 2.1;
+  }
+
+  .handler-grip-point {
+    r: 1.8;
+    cursor: grab;
+    transition:
+      r 120ms ease,
+      filter 120ms ease;
+  }
+
+  .handler-grip-halo {
+    transition:
+      r 120ms ease,
+      opacity 120ms ease;
+    r: 3.65;
+    opacity: 0;
+    stroke-width: 0.5;
+  }
+}
