@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bezier Visualizer v2</title>
+<style>
+:root{
+ --bg:#ffffff;
+ --fg:#111111;
+ --grid:#d0d0d0;
+ --panel:#f4f4f4;
+}
+body.dark{
+ --bg:#1e1e1e;
+ --fg:#eeeeee;
+ --grid:#555;
+ --panel:#2d2d2d;
+}
+body{
+ margin:0;
+ padding:20px;
+ font-family:Segoe UI,sans-serif;
+ background:var(--bg);
+ color:var(--fg);
+}
+.row{display:flex;gap:20px;flex-wrap:wrap;}
+.controls{
+ width:320px;
+ background:var(--panel);
+ padding:12px;
+ border-radius:8px;
+}
+label{display:block;margin-top:8px;}
+input[type=range]{width:100%;}
+button,select{margin-top:8px;}
+svg{
+ background:var(--bg);
+ border:1px solid var(--grid);
+}
+.tooltip{
+ position:fixed;
+ display:none;
+ pointer-events:none;
+ background:#000;
+ color:#fff;
+ padding:6px;
+ border-radius:4px;
+ font-size:12px;
+}
+</style>
+</head>
+<body>
+<h2>Bezier Visualizer v2</h2>
+
+<div class="row">
+<div class="controls">
+
+<label>Control inicial X <input id="h1x" type="range" min="0" max="100" value="0"></label>
+<label>Control inicial Y <input id="h1y" type="range" min="0" max="100" value="30"></label>
+
+<label>Control final X <input id="h2x" type="range" min="0" max="100" value="100"></label>
+<label>Control final Y <input id="h2y" type="range" min="0" max="100" value="30"></label>
+
+<label>Steps <input id="steps" type="range" min="2" max="100" value="20"></label>
+
+<hr>
+
+<label><input id="showCurve" type="checkbox" checked> Mostrar curva matemática</label>
+<label><input id="showPoints" type="checkbox" checked> Mostrar puntos discretizados</label>
+
+<hr>
+
+<label>Modo
+<select id="theme">
+<option value="system">System</option>
+<option value="light">Light</option>
+<option value="dark">Dark</option>
+</select>
+</label>
+
+<button id="copyJson">Copiar puntos JSON</button>
+<button id="copyCss">Copiar cubic-bezier()</button>
+
+<div id="cssOut"></div>
+
+</div>
+
+<div>
+<svg id="svg" width="700" height="700" viewBox="0 0 100 100">
+
+<g id="grid"></g>
+
+<line id="line1" stroke="orange" stroke-width="0.35"/>
+<line id="line2" stroke="deepskyblue" stroke-width="0.35"/>
+
+<path id="curve" fill="none" stroke="white" stroke-width="0.6"/>
+
+<g id="points"></g>
+
+<circle cx="0" cy="100" r="1.4" fill="limegreen"/>
+<circle cx="100" cy="0" r="1.4" fill="red"/>
+
+<circle id="h1" r="1.8" fill="orange" style="cursor:move"/>
+<circle id="h2" r="1.8" fill="deepskyblue" style="cursor:move"/>
+
+</svg>
+</div>
+</div>
+
+<div class="tooltip" id="tip"></div>
+
+<script>
+const svg=document.getElementById("svg");
+const tip=document.getElementById("tip");
+
+function round(v){return Math.round(v*100)/100;}
+
+function bezierPoints(h1,h2,steps){
+ const pts=[];
+ for(let t=0;t<=steps;t++){
+   const tn=t/steps;
+   const ti=(steps-t)/steps;
+
+   const f0=ti**3;
+   const f1=3*ti**2*tn;
+   const f2=3*ti*tn**2;
+   const f3=tn**3;
+
+   pts.push({
+      x:round(f1*h1.x+f2*h2.x+f3*100),
+      y:round(f1*h1.y+f2*h2.y+f3*100)
+   });
+ }
+ return pts;
+}
+
+function applyTheme(){
+ const mode=theme.value;
+ document.body.classList.remove("dark");
+
+ if(mode==="dark") document.body.classList.add("dark");
+ if(mode==="system"){
+   if(window.matchMedia("(prefers-color-scheme: dark)").matches)
+      document.body.classList.add("dark");
+ }
+
+ curve.setAttribute("stroke",
+   document.body.classList.contains("dark") ? "#fff":"#000"
+ );
+}
+
+function buildGrid(){
+ let html="";
+ for(let i=0;i<=100;i+=10){
+   const strong=(i===0||i===50||i===100);
+   html+=`<line x1="${i}" y1="0" x2="${i}" y2="100"
+      stroke="var(--grid)" stroke-width="${strong?0.25:0.15}"/>`;
+   html+=`<line x1="0" y1="${i}" x2="100" y2="${i}"
+      stroke="var(--grid)" stroke-width="${strong?0.25:0.15}"/>`;
+
+   html+=`<text x="${i}" y="99" font-size="2">${i}</text>`;
+   if(i<100) html+=`<text x="0" y="${100-i}" font-size="2">${i}</text>`;
+ }
+ grid.innerHTML=html;
+}
+
+let dragging=null;
+
+function setSliderValues(h1xv,h1yv,h2xv,h2yv){
+ h1x.value=h1xv;
+ h1y.value=h1yv;
+ h2x.value=h2xv;
+ h2y.value=h2yv;
+}
+
+function draw(){
+ applyTheme();
+
+ const h1p={x:+h1x.value,y:+h1y.value};
+ const h2p={x:+h2x.value,y:+h2y.value};
+ const stepsV=+steps.value;
+
+ const pts=bezierPoints(h1p,h2p,stepsV);
+
+ line1.setAttribute("x1",0);
+ line1.setAttribute("y1",100);
+ line1.setAttribute("x2",h1p.x);
+ line1.setAttribute("y2",100-h1p.y);
+
+ line2.setAttribute("x1",h2p.x);
+ line2.setAttribute("y1",100-h2p.y);
+ line2.setAttribute("x2",100);
+ line2.setAttribute("y2",0);
+
+ h1.setAttribute("cx",h1p.x);
+ h1.setAttribute("cy",100-h1p.y);
+
+ h2.setAttribute("cx",h2p.x);
+ h2.setAttribute("cy",100-h2p.y);
+
+ if(showCurve.checked){
+   let d=`M ${pts[0].x} ${100-pts[0].y}`;
+   pts.forEach(p=>d+=` L ${p.x} ${100-p.y}`);
+   curve.setAttribute("d",d);
+   curve.style.display="";
+ }else{
+   curve.style.display="none";
+ }
+
+ points.innerHTML="";
+ if(showPoints.checked){
+   pts.forEach(p=>{
+      points.innerHTML+=`<circle cx="${p.x}" cy="${100-p.y}" r="0.6"/>`;
+   });
+ }
+
+ cssOut.textContent=
+   `cubic-bezier(${(h1p.x/100).toFixed(2)}, ${(h1p.y/100).toFixed(2)}, ${(h2p.x/100).toFixed(2)}, ${(h2p.y/100).toFixed(2)})`;
+
+ window.currentPts=pts;
+}
+
+function mouseToSvg(evt){
+ const pt=svg.createSVGPoint();
+ pt.x=evt.clientX;
+ pt.y=evt.clientY;
+ const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+ return {x:Math.max(0,Math.min(100,p.x)),y:Math.max(0,Math.min(100,100-p.y))};
+}
+
+[h1,h2].forEach(el=>{
+ el.addEventListener("pointerdown",()=>dragging=el.id);
+});
+
+window.addEventListener("pointermove",e=>{
+ if(!dragging) return;
+
+ const p=mouseToSvg(e);
+
+ if(dragging==="h1"){
+   setSliderValues(p.x,p.y,h2x.value,h2y.value);
+ }else{
+   setSliderValues(h1x.value,h1y.value,p.x,p.y);
+ }
+
+ tip.style.display="block";
+ tip.style.left=(e.clientX+12)+"px";
+ tip.style.top=(e.clientY+12)+"px";
+ tip.textContent=`${dragging.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
+
+ draw();
+});
+
+window.addEventListener("pointerup",()=>{
+ dragging=null;
+ tip.style.display="none";
+});
+
+document.querySelectorAll("input,select").forEach(x=>x.addEventListener("input",draw));
+
+copyJson.onclick=()=>{
+ navigator.clipboard.writeText(JSON.stringify(window.currentPts,null,2));
+};
+
+copyCss.onclick=()=>{
+ navigator.clipboard.writeText(cssOut.textContent);
+};
+
+buildGrid();
+draw();
+</script>
+</body>
+</html>

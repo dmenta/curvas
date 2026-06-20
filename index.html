@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Bezier Visualizer</title>
+        <link rel="stylesheet" href="css/styles.css" />
+        <script src="js/app.js" defer></script>
+    </head>
+    <body>
+        <div class="row">
+            <div class="card">
+                <h2>Bezier Visualizer v3.2</h2>
+                <label>Inicial X<input id="h1x" type="range" min="0" max="100" value="0" /></label>
+                <label>Inicial Y<input id="h1y" type="range" min="0" max="100" value="30" /></label>
+                <label>Final X<input id="h2x" type="range" min="0" max="100" value="100" /></label>
+                <label>Final Y<input id="h2y" type="range" min="0" max="100" value="30" /></label>
+                <label>Steps<input id="steps" type="range" min="2" max="100" value="20" /></label>
+
+                <hr />
+
+                <label><input id="showGrid" type="checkbox" checked /> Grilla</label>
+                <label><input id="showCurve" type="checkbox" checked /> Curva</label>
+                <label><input id="showSegments" type="checkbox" /> Segmentos</label>
+                <label><input id="showPoints" type="checkbox" /> Puntos</label>
+                <label class="hidden"
+                    ><input id="showHandles" type="checkbox" checked /> Líneas de control</label
+                >
+
+                <hr />
+
+                <button id="copyJson">Copiar JSON</button>
+                <button id="copyCss">Copiar cubic-bezier()</button>
+
+                <hr />
+
+                <select id="theme">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+
+                <div id="info" class="small hidden"></div>
+            </div>
+
+            <div>
+                <svg id="svg" width="560" height="560" viewBox="0 0 100 100">
+                    <g id="grid"></g>
+                    <g id="controls"></g>
+                    <path id="realCurve" fill="none" stroke-width="0.7" />
+                    <polyline id="segments" fill="none" stroke="magenta" stroke-width="0.35" />
+                    <g id="points"></g>
+
+                    <circle
+                        id="h1Halo"
+                        r="3.2"
+                        fill="none"
+                        stroke="orange"
+                        stroke-width="0.5"
+                        opacity="0" />
+
+                    <circle
+                        id="h2Halo"
+                        r="3.2"
+                        fill="none"
+                        stroke="deepskyblue"
+                        stroke-width="0.5"
+                        opacity="0" />
+
+                    <circle id="h1" r="1.8" fill="orange" style="cursor: grab" />
+                    <circle id="h2" r="1.8" fill="deepskyblue" style="cursor: grab" />
+
+                    <text id="h1label" font-size="2"></text>
+                    <text id="h2label" font-size="2"></text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="tooltip" id="tip"></div>
+    </body>
+</html>
+
