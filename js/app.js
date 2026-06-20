@@ -47,8 +47,7 @@ function getHandlers() {
  * @returns {Point[]}
  */
 function getCurrentPoints() {
-    const { h1, h2 } = getHandlers();
-    return bezierPoints(h1, h2, +steps.value);
+    return bezierPoints(getHandlers(), +steps.value);
 }
 
 /**
@@ -87,19 +86,16 @@ function addPanelControlsEvents() {
 
     [showPoints, showSegments].forEach((x) => x.addEventListener('input', draw));
 
-    showGrid.addEventListener(
-        'input',
-        (e) => (grid.style.display = showGrid.checked ? '' : 'none'),
-    );
+    showGrid.addEventListener('input', () => (grid.style.display = showGrid.checked ? '' : 'none'));
 
-    showHandles.addEventListener('input', (e) => {
+    showHandles.addEventListener('input', () => {
         h1Line.style.display = showHandles.checked ? '' : 'none';
         h2Line.style.display = showHandles.checked ? '' : 'none';
     });
 
     showCurve.addEventListener(
         'input',
-        (e) => (realCurve.style.display = showCurve.checked ? '' : 'none'),
+        () => (realCurve.style.display = showCurve.checked ? '' : 'none'),
     );
     theme.addEventListener('input', applyTheme);
 }
@@ -163,10 +159,8 @@ function addPointerEvents() {
 }
 
 function addCopyEvents() {
-    copyJson.onclick = () => {
-        const currentPoints = getCurrentPoints();
-        copyWithFeedback(copyJson, JSON.stringify(currentPoints, null, 2));
-    };
+    copyJson.onclick = () =>
+        copyWithFeedback(copyJson, JSON.stringify(getCurrentPoints(), null, 2));
 
     copyCss.onclick = () =>
         copyWithFeedback(

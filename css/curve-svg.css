@@ -2,10 +2,16 @@
   --grid: #c8c8c8;
   --h1-color: orange;
   --h2-color: deepskyblue;
+  --curve-color: oklch(80.765% 0.22372 140.8);
+  --point-color: oklch(70.552% 0.15701 251.023);
+  --segment-color: #303030;
 }
 
 body.dark {
   --grid: #666;
+  --curve-color: oklch(75.765% 0.22372 140.8);
+  --point-color: oklch(65.552% 0.15701 251.023);
+  --segment-color: #c8c8c8;
 }
 
 svg {
@@ -22,21 +28,21 @@ text {
 
 #points {
   circle {
-    fill: white;
-    stroke: oklch(70.765% 0.22372 140.8);
-    stroke-width: 0.5;
+    fill: var(--point-color);
+    stroke: var(--curve-color);
+    stroke-width: 0.375;
     r: .9;
   }
 }
 
 #realCurve {
-  stroke: oklch(70.765% 0.22372 140.8);
-  stroke-width: 0.75;
+  stroke: var(--curve-color);
+  stroke-width: 0.625;
 }
 
 #segments {
-  stroke: oklch(62.441% 0.21125 341.617);
-  stroke-width: 0.35;
+  stroke: var(--segment-color);
+  stroke-width: 0.25;
 }
 
 .grid-min-line {
@@ -70,7 +76,6 @@ text {
   stroke: var(--h2-color);
 }
 
-
 @keyframes pulseHalo {
   0% {
     opacity: .25;
@@ -100,9 +105,7 @@ text {
 }
 
 #handlerGrip {
-
   &:active {
-
     .handler-grip-halo {
       animation: pulseHalo 1.2s infinite;
     }

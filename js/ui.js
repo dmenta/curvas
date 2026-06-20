@@ -15,7 +15,8 @@ function draw() {
     updateHandlerLabel(h1label, handlers.h1, 'H1');
     updateHandlerLabel(h2label, handlers.h2, 'H2');
 
-    drawSegmentsPoints();
+    drawSegments();
+    drawPoints();
 
     updateInfo(handlers);
 }
@@ -79,30 +80,56 @@ function updateInfo(handlers) {
     `;
 }
 
-function drawSegmentsPoints() {
-    if (showSegments.checked || showPoints.checked) {
-        const curvePoints = getCurrentPoints();
+function drawSegments() {
+    if (!showSegments.checked) {
+        segments.classList.add('hidden');
+        return;
+    }
 
-        if (showSegments.checked) {
-            const polyline = curvePoints
-                .map((p) => `${p.x.toFixed(2)},${(100 - p.y).toFixed(2)}`)
-                .join(' ');
-            segments.setAttribute('points', polyline);
+    segments.setAttribute(
+        'points',
+        getCurrentPoints()
+            .map((p) => `${p.x.toFixed(2)},${(100 - p.y).toFixed(2)}`)
+            .join(' '),
+    );
+    segments.classList.remove('hidden');
+}
+
+function drawPoints() {
+    if (!showPoints.checked) {
+        points.classList.add('hidden');
+        return;
+    }
+
+    const elemCount = points.children.length;
+    const dataPoints = getCurrentPoints();
+
+    dataPoints.map((p, i) => {
+        const values = { x: p.x.toFixed(2), y: (gridSize - p.y).toFixed(2) };
+
+        if (i < elemCount) {
+            /** @type {SVGCircleElement} */
+            const circle = points.children[i];
+            circle.setAttribute('cx', values.x);
+            circle.setAttribute('cy', values.y);
+            circle.classList.remove('hidden');
+        } else {
+            /** @type {SVGCircleElement} */
+            const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            el.setAttribute('cx', values.x);
+            el.setAttribute('cy', values.y);
+            el.setAttribute('r', 0.55);
+            points.appendChild(el);
         }
+    });
 
-        if (showPoints.checked) {
-            const circles = curvePoints
-                .map((p) => {
-                    return `<circle cx="${p.x.toFixed(2)}" cy="${(100 - p.y).toFixed(2)}" r="0.55"/>`;
-                })
-                .join('');
-
-            points.innerHTML = circles;
+    if (elemCount > dataPoints.length) {
+        for (let i = dataPoints.length; i < elemCount; i++) {
+            points.children[i].classList.add('hidden');
         }
     }
 
-    segments.style.display = showSegments.checked ? '' : 'none';
-    points.style.display = showPoints.checked ? '' : 'none';
+    points.classList.remove('hidden');
 }
 
 /**
