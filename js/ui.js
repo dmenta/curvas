@@ -1,64 +1,115 @@
+/**  @type {number}     */
+const gridSize = 100;
+
+/**  @type {number}     */
+const desplazamientoLabel = 1.5;
+
 function draw() {
-    applyTheme();
+    const handlers = getHandlers();
 
-    let h1p = { x: +h1x.value, y: +h1y.value };
-    let h2p = { x: +h2x.value, y: +h2y.value };
-    let s = +steps.value;
+    updateRealCurve(handlers);
 
-    let pts = bezierPoints(h1p, h2p, s);
-    state.currentPts = pts;
+    updateHandler(h1Grip, h1Line, handlers.h1);
+    updateHandler(h2Grip, h2Line, handlers.h2);
 
-    grid.style.display = showGrid.checked ? '' : 'none';
-    h1Line.style.display = showHandles.checked ? '' : 'none';
-    h2Line.style.display = showHandles.checked ? '' : 'none';
+    updateHandlerLabel(h1label, handlers.h1, 'H1');
+    updateHandlerLabel(h2label, handlers.h2, 'H2');
 
-    realCurve.style.display = showCurve.checked ? '' : 'none';
-    realCurve.setAttribute(
-        'd',
-        `M 0 100 C ${h1p.x} ${100 - h1p.y}, ${h2p.x} ${100 - h2p.y}, 100 0`,
-    );
+    drawSegmentsPoints();
 
-    segments.style.display = showSegments.checked ? '' : 'none';
-    segments.setAttribute('points', pts.map((p) => `${p.x},${100 - p.y}`).join(' '));
-
-    points.innerHTML = '';
-    if (showPoints.checked) {
-        pts.forEach((p) => {
-            points.innerHTML += `<circle cx="${p.x}" cy="${100 - p.y}" r="0.55" fill="currentColor"/>`;
-        });
-    }
-
-    const desplazamientoLabel = 1.5;
-    const gridSize = 100;
-
-    h1Grip.setAttribute('x', h1p.x);
-    h1Grip.setAttribute('y', gridSize - h1p.y);
-
-    h2Grip.setAttribute('x', h2p.x);
-    h2Grip.setAttribute('y', gridSize - h2p.y);
-
-    h1Line.setAttribute('x2', h1p.x);
-    h1Line.setAttribute('y2', gridSize - h1p.y);
-
-    h2Line.setAttribute('x2', h2p.x);
-    h2Line.setAttribute('y2', gridSize - h2p.y);
-
-    h1label.setAttribute('x', h1p.x + desplazamientoLabel);
-    h1label.setAttribute('y', gridSize - h1p.y - desplazamientoLabel);
-    h1label.textContent = `H1 (${round(h1p.x)},${round(h1p.y)})`;
-
-    h2label.setAttribute('x', h2p.x + desplazamientoLabel);
-    h2label.setAttribute('y', gridSize - h2p.y - desplazamientoLabel);
-    h2label.textContent = `H2 (${round(h2p.x)},${round(h2p.y)})`;
-
-    info.innerHTML = `
- <b>Puntos generados:</b> ${pts.length}<br>
- <b>Control inicial:</b> (${h1p.x}, ${h1p.y})<br>
- <b>Control final:</b> (${h2p.x}, ${h2p.y})<br>
- <b>CSS:</b> cubic-bezier(${(h1p.x / 100).toFixed(2)}, ${(h1p.y / 100).toFixed(2)}, ${(h2p.x / 100).toFixed(2)}, ${(h2p.y / 100).toFixed(2)})
- `;
+    updateInfo(handlers);
 }
 
+/**
+ *
+ * @param {Handlers} handlers
+ */
+function updateRealCurve(handlers) {
+    realCurve.setAttribute(
+        'd',
+        `M 0 100 C ${handlers.h1.x} ${100 - handlers.h1.y}, ${handlers.h2.x} ${100 - handlers.h2.y}, 100 0`,
+    );
+    /* <path fill="none" stroke="red" d="M 0,100 C 5,80 18,65 50,50 S 70,30 100,0"/> */
+}
+
+/**
+ *
+ * @param {SVGTextElement} elem
+ * @param {Point} pos
+ * @param {string} tag
+ */
+function updateHandlerLabel(elem, pos, tag) {
+    elem.setAttribute('x', pos.x + desplazamientoLabel);
+    elem.setAttribute('y', gridSize - pos.y - desplazamientoLabel);
+    elem.textContent = `${tag} (${round(pos.x)},${round(pos.y)})`;
+}
+
+/**
+ *
+ * @param {SVGUseElement} gripElem
+ * @param {SVGLineElement} lineElem
+ * @param {Point} pos
+ */
+function updateHandler(gripElem, lineElem, pos) {
+    gripElem.setAttribute('x', pos.x);
+    gripElem.setAttribute('y', gridSize - pos.y);
+    lineElem.setAttribute('x2', pos.x);
+    lineElem.setAttribute('y2', gridSize - pos.y);
+}
+
+/**
+ *
+ * @param {Handlers} handlers
+ */
+function updateInfo(handlers) {
+    if (info.classList.contains('hidden')) {
+        return;
+    }
+
+    const pointsInfo =
+        showSegments.checked || showPoints.checked
+            ? `<b>Puntos generados:</b> ${getCurrentPoints().length}<br>`
+            : '';
+
+    info.innerHTML = `
+    ${pointsInfo}  
+    <b>Control inicial:</b> (${handlers.h1.x.toFixed(2)}, ${handlers.h1.y.toFixed(2)})<br>
+    <b>Control final:</b> (${handlers.h2.x.toFixed(2)}, ${handlers.h2.y.toFixed(2)})<br>
+    <b>CSS:</b> cubic-bezier(${(handlers.h1.x / 100).toFixed(2)}, ${(handlers.h1.y / 100).toFixed(2)}, ${(handlers.h2.x / 100).toFixed(2)}, ${(handlers.h2.y / 100).toFixed(2)})
+    `;
+}
+
+function drawSegmentsPoints() {
+    if (showSegments.checked || showPoints.checked) {
+        const curvePoints = getCurrentPoints();
+
+        if (showSegments.checked) {
+            const polyline = curvePoints
+                .map((p) => `${p.x.toFixed(2)},${(100 - p.y).toFixed(2)}`)
+                .join(' ');
+            segments.setAttribute('points', polyline);
+        }
+
+        if (showPoints.checked) {
+            const circles = curvePoints
+                .map((p) => {
+                    return `<circle cx="${p.x.toFixed(2)}" cy="${(100 - p.y).toFixed(2)}" r="0.55"/>`;
+                })
+                .join('');
+
+            points.innerHTML = circles;
+        }
+    }
+
+    segments.style.display = showSegments.checked ? '' : 'none';
+    points.style.display = showPoints.checked ? '' : 'none';
+}
+
+/**
+ *
+ * @param {HTMLButtonElement} button
+ * @param {string} text
+ */
 async function copyWithFeedback(button, text) {
     await navigator.clipboard.writeText(text);
     const original = button.textContent;

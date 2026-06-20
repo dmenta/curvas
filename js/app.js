@@ -1,12 +1,60 @@
+/** @type {SVGSVGElement} */
 const svg = document.getElementById('svg');
+/** @type {HTMLDivElement} */
 const tip = document.getElementById('tip');
 
+/**
+ * @typedef {Object} Point
+ * @property {number} x
+ * @property {number} y
+ */
+
+/**
+ * @typedef {Object} Handlers
+ * @property {Point} h1
+ * @property {Point} h2
+ */
+
+/**
+ * @typedef {Object} State
+ * @property {string|null} drag
+ * @property {boolean} shiftPressed
+ */
 const state = {
     drag: null,
     shiftPressed: false,
-    currentPts: [],
 };
 
+/**
+ *
+ * @returns {Handlers}
+ */
+function getHandlers() {
+    return {
+        h1: {
+            x: +h1x.value,
+            y: +h1y.value,
+        },
+        h2: {
+            x: +h2x.value,
+            y: +h2y.value,
+        },
+    };
+}
+
+/**
+ *
+ * @returns {Point[]}
+ */
+function getCurrentPoints() {
+    const { h1, h2 } = getHandlers();
+    return bezierPoints(h1, h2, +steps.value);
+}
+
+/**
+ * @param {PointerEvent} e
+ * @returns {Point}
+ */
 function svgPos(e) {
     let pt = svg.createSVGPoint();
     pt.x = e.clientX;
@@ -24,62 +72,109 @@ function svgPos(e) {
     return { x, y };
 }
 
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'Shift') state.shiftPressed = true;
-});
+function addEventListeners() {
+    addPanelControlsEvents();
+    addHandlersEvents();
+    addKeyboardEvents();
+    addPointerEvents();
+    addCopyEvents();
+}
 
-window.addEventListener('keyup', (e) => {
-    if (e.key === 'Shift') state.shiftPressed = false;
-});
+function addPanelControlsEvents() {
+    document
+        .querySelectorAll('input[type=range]')
+        .forEach((x) => x.addEventListener('input', draw));
 
-[h1Grip, h2Grip].forEach((el) =>
-    el.addEventListener('pointerdown', () => {
-        state.drag = el.id;
-    }),
-);
+    [showPoints, showSegments].forEach((x) => x.addEventListener('input', draw));
 
-window.addEventListener('pointermove', (e) => {
-    if (!state.drag) return;
-    let p = svgPos(e);
-    if (state.drag === 'h1Grip') {
-        h1x.value = p.x;
-        h1y.value = p.y;
-    } else {
-        h2x.value = p.x;
-        h2y.value = p.y;
-    }
-    tip.style.display = 'block';
-    tip.style.left = e.clientX + 12 + 'px';
-    tip.style.top = e.clientY + 12 + 'px';
-    tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
-    draw();
-});
-
-window.addEventListener('pointerup', () => {
-    state.drag = null;
-    tip.style.display = 'none';
-});
-
-h1Grip.addEventListener('dblclick', () => {
-    h1x.value = 0;
-    h1y.value = 30;
-    draw();
-});
-
-h2Grip.addEventListener('dblclick', () => {
-    h2x.value = 100;
-    h2y.value = 30;
-    draw();
-});
-
-document.querySelectorAll('input,select').forEach((x) => x.addEventListener('input', draw));
-
-copyJson.onclick = () => copyWithFeedback(copyJson, JSON.stringify(state.currentPts, null, 2));
-
-copyCss.onclick = () =>
-    copyWithFeedback(
-        copyCss,
-        `cubic-bezier(${(+h1x.value / 100).toFixed(2)}, ${(+h1y.value / 100).toFixed(2)}, ${(+h2x.value / 100).toFixed(2)}, ${(+h2y.value / 100).toFixed(2)})`,
+    showGrid.addEventListener(
+        'input',
+        (e) => (grid.style.display = showGrid.checked ? '' : 'none'),
     );
 
+    showHandles.addEventListener('input', (e) => {
+        h1Line.style.display = showHandles.checked ? '' : 'none';
+        h2Line.style.display = showHandles.checked ? '' : 'none';
+    });
+
+    showCurve.addEventListener(
+        'input',
+        (e) => (realCurve.style.display = showCurve.checked ? '' : 'none'),
+    );
+    theme.addEventListener('input', applyTheme);
+}
+
+function addHandlersEvents() {
+    [h1Grip, h2Grip].forEach((el) =>
+        el.addEventListener('pointerdown', () => (state.drag = el.id)),
+    );
+
+    h1Grip.addEventListener('dblclick', () => {
+        h1x.value = 0;
+        h1y.value = 30;
+        draw();
+    });
+
+    h2Grip.addEventListener('dblclick', () => {
+        h2x.value = 100;
+        h2y.value = 30;
+        draw();
+    });
+}
+
+function addKeyboardEvents() {
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Shift') state.shiftPressed = true;
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (e.key === 'Shift') state.shiftPressed = false;
+    });
+}
+
+function addPointerEvents() {
+    window.addEventListener('pointermove', (e) => {
+        if (!state.drag) {
+            return;
+        }
+
+        let p = svgPos(e);
+
+        if (state.drag === 'h1Grip') {
+            h1x.value = p.x;
+            h1y.value = p.y;
+        } else {
+            h2x.value = p.x;
+            h2y.value = p.y;
+        }
+
+        tip.style.display = 'block';
+        tip.style.left = e.clientX + 12 + 'px';
+        tip.style.top = e.clientY + 12 + 'px';
+        tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
+
+        draw();
+    });
+
+    window.addEventListener('pointerup', () => {
+        state.drag = null;
+        tip.style.display = 'none';
+    });
+}
+
+function addCopyEvents() {
+    copyJson.onclick = () => {
+        const currentPoints = getCurrentPoints();
+        copyWithFeedback(copyJson, JSON.stringify(currentPoints, null, 2));
+    };
+
+    copyCss.onclick = () =>
+        copyWithFeedback(
+            copyCss,
+            `cubic-bezier(${(+h1x.value / 100).toFixed(2)}, ${(+h1y.value / 100).toFixed(2)}, ${(+h2x.value / 100).toFixed(2)}, ${(+h2y.value / 100).toFixed(2)})`,
+        );
+}
+
+addEventListeners();
+applyTheme();
 draw();

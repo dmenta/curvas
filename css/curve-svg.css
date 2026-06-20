@@ -20,6 +20,25 @@ text {
   fill: var(--fg)
 }
 
+#points {
+  circle {
+    fill: white;
+    stroke: oklch(70.765% 0.22372 140.8);
+    stroke-width: 0.5;
+    r: .9;
+  }
+}
+
+#realCurve {
+  stroke: oklch(70.765% 0.22372 140.8);
+  stroke-width: 0.75;
+}
+
+#segments {
+  stroke: oklch(62.441% 0.21125 341.617);
+  stroke-width: 0.35;
+}
+
 .grid-min-line {
   stroke: var(--grid);
   stroke-dasharray: .5 1;

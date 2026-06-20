@@ -1,7 +1,19 @@
+/**
+ *
+ * @param {number} v
+ * @returns {number}
+ */
 function round(v) {
     return Math.round(v * 100) / 100;
 }
 
+/**
+ *
+ * @param {Point} h1
+ * @param {Point} h2
+ * @param {number} steps
+ * @returns {Point[]}
+ */
 function bezierPoints(h1, h2, steps) {
     let pts = [];
     for (let t = 0; t <= steps; t++) {
