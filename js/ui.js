@@ -8,11 +8,11 @@ const desplazamientoLabel = 1.5;
 function draw(state) {
   updateRealCurve(state);
 
-  updateHandler(h1Grip, h1Line, state.h1);
-  updateHandler(h2Grip, h2Line, state.h2);
+  updateHandler(els.h1Grip, els.h1Line, state.h1);
+  updateHandler(els.h2Grip, els.h2Line, state.h2);
 
-  updateHandlerLabel(h1label, state.h1, "H1");
-  updateHandlerLabel(h2label, state.h2, "H2");
+  updateHandlerLabel(els.h1label, state.h1, "H1");
+  updateHandlerLabel(els.h2label, state.h2, "H2");
 
   drawSegments(state);
   drawPoints(state);
@@ -22,11 +22,10 @@ function draw(state) {
 
 /** @param {CurveState} state */
 function updateRealCurve(state) {
-  realCurve.setAttribute(
+  els.realCurve.setAttribute(
     "d",
     `M 0 100 C ${state.h1.x} ${100 - state.h1.y}, ${state.h2.x} ${100 - state.h2.y}, 100 0`,
   );
-  /* <path fill="none" stroke="red" d="M 0,100 C 5,80 18,65 50,50 S 70,30 100,0"/> */
 }
 
 /**
@@ -54,16 +53,16 @@ function updateHandler(gripElem, lineElem, pos) {
 
 /**  @param {CurveState} state */
 function updateInfo(state) {
-  if (info.classList.contains("hidden")) {
+  if (els.info.classList.contains("hidden")) {
     return;
   }
 
   const pointsInfo =
-    showSegments.checked || showPoints.checked
+    els.showSegments.checked || els.showPoints.checked
       ? `<b>Puntos generados:</b> ${bezierPoints(state).length}<br>`
       : "";
 
-  info.innerHTML = `
+  els.info.innerHTML = `
     ${pointsInfo}  
     <b>Control inicial:</b> (${state.h1.x.toFixed(2)}, ${state.h1.y.toFixed(2)})<br>
     <b>Control final:</b> (${state.h2.x.toFixed(2)}, ${state.h2.y.toFixed(2)})<br>
@@ -73,28 +72,28 @@ function updateInfo(state) {
 
 /**  @param {CurveState} state */
 function drawSegments(state) {
-  if (!showSegments.checked) {
-    segments.classList.add("hidden");
+  if (!els.showSegments.checked) {
+    els.segments.classList.add("hidden");
     return;
   }
 
-  segments.setAttribute(
+  els.segments.setAttribute(
     "points",
     bezierPoints(state)
       .map((p) => `${p.x.toFixed(2)},${(100 - p.y).toFixed(2)}`)
       .join(" "),
   );
-  segments.classList.remove("hidden");
+  els.segments.classList.remove("hidden");
 }
 
 /**  @param {CurveState} state */
 function drawPoints(state) {
-  if (!showPoints.checked) {
-    points.classList.add("hidden");
+  if (!els.showPoints.checked) {
+    els.points.classList.add("hidden");
     return;
   }
 
-  const elemCount = points.children.length;
+  const elemCount = els.points.children.length;
   const dataPoints = bezierPoints(state);
 
   dataPoints.map((p, i) => {
@@ -102,7 +101,7 @@ function drawPoints(state) {
 
     if (i < elemCount) {
       /** @type {SVGCircleElement} */
-      const circle = points.children[i];
+      const circle = els.points.children[i];
       circle.setAttribute("cx", values.x);
       circle.setAttribute("cy", values.y);
       circle.classList.remove("hidden");
@@ -115,17 +114,17 @@ function drawPoints(state) {
       el.setAttribute("cx", values.x);
       el.setAttribute("cy", values.y);
       el.setAttribute("r", 0.55);
-      points.appendChild(el);
+      els.points.appendChild(el);
     }
   });
 
   if (elemCount > dataPoints.length) {
     for (let i = dataPoints.length; i < elemCount; i++) {
-      points.children[i].classList.add("hidden");
+      els.points.children[i].classList.add("hidden");
     }
   }
 
-  points.classList.remove("hidden");
+  els.points.classList.remove("hidden");
 }
 
 /**

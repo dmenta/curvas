@@ -1,8 +1,3 @@
-/** @type {SVGSVGElement} */
-const svg = document.getElementById("svg");
-/** @type {HTMLDivElement} */
-const tip = document.getElementById("tip");
-
 /**
  * @typedef {Object} Point
  * @property {number} x
@@ -35,6 +30,76 @@ const state = {
   shiftPressed: false,
 };
 
+const els = {
+  // Sliders h1
+  /** @type {HTMLInputElement} */
+  h1x: document.getElementById("h1x"),
+  /** @type {HTMLInputElement} */
+  h1y: document.getElementById("h1y"),
+  // Sliders h2
+  /** @type {HTMLInputElement} */
+  h2x: document.getElementById("h2x"),
+  /** @type {HTMLInputElement} */
+  h2y: document.getElementById("h2y"),
+  // Slider steps
+  /** @type {HTMLInputElement} */
+  steps: document.getElementById("steps"),
+
+  // Checkboxes
+  /** @type {HTMLInputElement} */
+  showGrid: document.getElementById("showGrid"),
+  /** @type {HTMLInputElement} */
+  showCurve: document.getElementById("showCurve"),
+  /** @type {HTMLInputElement} */
+  showHandles: document.getElementById("showHandles"),
+  /** @type {HTMLInputElement} */
+  showSegments: document.getElementById("showSegments"),
+  /** @type {HTMLInputElement} */
+  showPoints: document.getElementById("showPoints"),
+
+  // Botones
+  /** @type {HTMLButtonElement} */
+  copyCss: document.getElementById("copyCss"),
+  /** @type {HTMLButtonElement} */
+  copyJson: document.getElementById("copyJson"),
+
+  //SVG
+  /** @type {SVGSVGElement} */
+  svg: document.getElementById("svg"),
+  /** @type {SVGPathElement} */
+  realCurve: document.getElementById("realCurve"),
+  /** @type {SVGPolylineElement} */
+  segments: document.getElementById("segments"),
+  /** @type {SVGGElement} */
+  points: document.getElementById("points"),
+  /** @type {SVGGElement} */
+  grid: document.getElementById("grid"),
+  /** @type {SVGGElement} */
+  controls: document.getElementById("controls"),
+  /** @type {SVGUseElement} */
+  h1Grip: document.getElementById("h1Grip"),
+  /** @type {SVGUseElement} */
+  h2Grip: document.getElementById("h2Grip"),
+  /** @type {SVGLineElement} */
+  h1Line: document.getElementById("h1Line"),
+  /** @type {SVGLineElement} */
+  h2Line: document.getElementById("h2Line"),
+  /** @type {SVGTextElement} */
+  h1label: document.getElementById("h1label"),
+  /** @type {SVGTextElement} */
+  h2label: document.getElementById("h2label"),
+
+  // UI
+  /** @type {HTMLDivElement} */
+  info: document.getElementById("info"),
+  /** @type {HTMLDivElement} */
+  tip: document.getElementById("tip"),
+  /** @type {HTMLSelectElement} */
+  theme: document.getElementById("theme"),
+  /** @type {HTMLMetaElement} */
+  colorScheme: document.getElementById("colorScheme"),
+};
+
 /** @type {CurveState} */
 let model = {
   h1: { x: 30, y: 90 },
@@ -44,11 +109,11 @@ let model = {
 
 /**  @param {CurveState} s */
 function writeSnapshot(s) {
-  h1x.value = s.h1.x;
-  h1y.value = s.h1.y;
-  h2x.value = s.h2.x;
-  h2y.value = s.h2.y;
-  steps.value = s.steps;
+  els.h1x.value = s.h1.x;
+  els.h1y.value = s.h1.y;
+  els.h2x.value = s.h2.x;
+  els.h2y.value = s.h2.y;
+  els.steps.value = s.steps;
 }
 
 /**  @param {CurveState} next */
@@ -144,63 +209,57 @@ function addEventListeners() {
 }
 
 function addSlidersEvents() {
-  steps.addEventListener("input", () =>
-    setState({ ...model, steps: +steps.value }),
+  els.steps.addEventListener("input", () =>
+    setState({ ...model, steps: +els.steps.value }),
   );
 
-  h1x.addEventListener("input", () =>
-    setState({ ...model, h1: { ...model.h1, x: +h1x.value } }),
+  els.h1x.addEventListener("input", () =>
+    setState({ ...model, h1: { ...model.h1, x: +els.h1x.value } }),
   );
-  h1y.addEventListener("input", () =>
-    setState({ ...model, h1: { ...model.h1, y: +h1y.value } }),
+  els.h1y.addEventListener("input", () =>
+    setState({ ...model, h1: { ...model.h1, y: +els.h1y.value } }),
   );
-  h2x.addEventListener("input", () =>
-    setState({ ...model, h2: { ...model.h2, x: +h2x.value } }),
+  els.h2x.addEventListener("input", () =>
+    setState({ ...model, h2: { ...model.h2, x: +els.h2x.value } }),
   );
-  h2y.addEventListener("input", () =>
-    setState({ ...model, h2: { ...model.h2, y: +h2y.value } }),
+  els.h2y.addEventListener("input", () =>
+    setState({ ...model, h2: { ...model.h2, y: +els.h2y.value } }),
   );
 }
 
 function addPanelControlsEvents() {
-  [showPoints, showSegments].forEach((x) =>
+  [els.showPoints, els.showSegments].forEach((x) =>
     x.addEventListener("input", () => draw(model)),
   );
 
-  showGrid.addEventListener("input", () => {
-    grid.style.display = showGrid.checked ? "" : "none";
+  els.showGrid.addEventListener("input", (e) => {
+    els.grid.style.display = e.srcElement.checked ? "" : "none";
   });
 
-  showHandles.addEventListener("input", () => {
-    h1Line.style.display = showHandles.checked ? "" : "none";
-    h2Line.style.display = showHandles.checked ? "" : "none";
+  els.showHandles.addEventListener("input", (e) => {
+    els.h1Line.style.display = e.srcElement.checked ? "" : "none";
+    els.h2Line.style.display = e.srcElement.checked ? "" : "none";
   });
 
-  showCurve.addEventListener("input", () => {
-    realCurve.style.display = showCurve.checked ? "" : "none";
+  els.showCurve.addEventListener("input", (e) => {
+    els.realCurve.style.display = e.srcElement.checked ? "" : "none";
   });
 
-  theme.addEventListener("input", () => applyTheme(theme.value));
+  els.theme.addEventListener("input", () => applyTheme(els.theme.value));
 }
 
 function addHandlersEvents() {
-  [h1Grip, h2Grip].forEach((el) =>
+  [els.h1Grip, els.h2Grip].forEach((el) =>
     el.addEventListener("pointerdown", () => (state.drag = el.id)),
   );
 
-  h1Grip.addEventListener("dblclick", () => {
-    setState({
-      ...model,
-      h1: { x: 0, y: 30 },
-    });
-  });
+  els.h1Grip.addEventListener("dblclick", () =>
+    setState({ ...model, h1: { x: 0, y: 30 } }),
+  );
 
-  h2Grip.addEventListener("dblclick", () => {
-    setState({
-      ...model,
-      h2: { x: 100, y: 30 },
-    });
-  });
+  els.h2Grip.addEventListener("dblclick", () =>
+    setState({ ...model, h2: { x: 100, y: 30 } }),
+  );
 }
 
 function addKeyboardEvents() {
@@ -226,33 +285,36 @@ function addPointerEvents() {
     });
 
     // tip es UI pura, no toca model, está bien acá
-    tip.style.display = "block";
-    tip.style.left = e.clientX + 12 + "px";
-    tip.style.top = e.clientY + 12 + "px";
-    tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
+    els.tip.style.display = "block";
+    els.tip.style.left = e.clientX + 12 + "px";
+    els.tip.style.top = e.clientY + 12 + "px";
+    els.tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
   });
 
   window.addEventListener("pointerup", () => {
     state.drag = null;
-    tip.style.display = "none";
+    els.tip.style.display = "none";
   });
 }
 
 function addCopyEvents() {
-  copyJson.onclick = () =>
-    copyWithFeedback(copyJson, JSON.stringify(bezierPoints(model), null, 2));
+  els.copyJson.onclick = () =>
+    copyWithFeedback(
+      els.copyJson,
+      JSON.stringify(bezierPoints(model), null, 2),
+    );
 
-  copyCss.onclick = () => {
+  els.copyCss.onclick = () => {
     const s = model;
     copyWithFeedback(
-      copyCss,
+      els.copyCss,
       `cubic-bezier(${(s.h1.x / 100).toFixed(2)}, ${(s.h1.y / 100).toFixed(2)}, ${(s.h2.x / 100).toFixed(2)}, ${(s.h2.y / 100).toFixed(2)})`,
     );
   };
 }
 
 addEventListeners();
-applyTheme(theme.value);
+applyTheme(els.theme.value);
 
 (function initFromUrl() {
   const loaded = UrlStore.load() ?? model;
