@@ -107,19 +107,18 @@ let model = {
   steps: 20,
 };
 
-const updateModelNextCalls = [updateUI, (next, _) => UrlStore.save(next)];
+const updateModelNextCalls = [updateUI, (next) => UrlStore.save(next)];
 
 /**
  * @param {CurveState} next
- * @param {function(CurveState,CurveState):void[]} [nextCallback=updateModelNextCalls]
+ * @param {function(CurveState):void[]} [nextCallback=updateModelNextCalls]
  * @returns {void}
  * */
 function updateModel(next, nextCallback = updateModelNextCalls) {
-  const prev = { ...model };
   model = next;
 
   if (nextCallback) {
-    nextCallback.forEach((callback) => callback(model, prev));
+    nextCallback.forEach((callback) => callback(model));
   }
 }
 
@@ -127,11 +126,9 @@ function updateModel(next, nextCallback = updateModelNextCalls) {
  *   @param {CurveState} next
  *   @param {CurveState} prev
  */
-function updateUI(next, prev) {
-  Promise.all([
-    new Promise((_) => updateControls(next, prev)),
-    new Promise((_) => updateDraw(next)),
-  ]);
+function updateUI(next) {
+  updateControls(next);
+  updateDraw(next);
 }
 
 /**  @param {CurveState} next */
@@ -143,77 +140,13 @@ function updateDraw(next) {
  *   @param {CurveState} next
  *   @param {CurveState} prev
  */
-function updateControls(next, prev) {
-  if (Math.round(next.h1.x) !== Math.round(prev.h1.x)) {
-    els.h1x.value = next.h1.x;
-  }
-  if (Math.round(next.h1.y) !== Math.round(prev.h1.y)) {
-    els.h1y.value = next.h1.y;
-  }
-  if (Math.round(next.h2.x) !== Math.round(prev.h2.x)) {
-    els.h2x.value = next.h2.x;
-  }
-  if (Math.round(next.h2.y) !== Math.round(prev.h2.y)) {
-    els.h2y.value = next.h2.y;
-  }
-  if (next.steps !== prev.steps) {
-    els.steps.value = next.steps;
-  }
+function updateControls(next) {
+  els.h1x.value = next.h1.x;
+  els.h1y.value = next.h1.y;
+  els.h2x.value = next.h2.x;
+  els.h2y.value = next.h2.y;
+  els.steps.value = next.steps;
 }
-
-// /**  @param {CurveState} s */
-// function writeSnapshot(s) {
-//   const total = s.h1.x + s.h1.y + s.h2.x + s.h2.y + s.steps;
-
-//   if (total === -5) {
-//     return;
-//   }
-
-//   if (s.h1.x !== -1) {
-//     els.h1x.value = s.h1.x;
-//   }
-//   if (s.h1.y !== -1) {
-//     els.h1y.value = s.h1.y;
-//   }
-//   if (s.h2.x !== -1) {
-//     els.h2x.value = s.h2.x;
-//   }
-//   if (s.h2.y !== -1) {
-//     els.h2y.value = s.h2.y;
-//   }
-//   if (s.steps !== -1) {
-//     els.steps.value = s.steps;
-//   }
-
-//   // els.h1x.value = s.h1.x;
-//   // els.h1y.value = s.h1.y;
-//   // els.h2x.value = s.h2.x;
-//   // els.h2y.value = s.h2.y;
-//   // els.steps.value = s.steps;
-// }
-
-// /**  @param {CurveState} next */
-// function setState(next) {
-//   const diff = {
-//     h1: {
-//       x: Math.round(next.h1.x) !== Math.round(model.h1.x) ? next.h1.x : -1,
-//       y: Math.round(next.h1.y) !== Math.round(model.h1.y) ? next.h1.y : -1,
-//     },
-//     h2: {
-//       x: Math.round(next.h2.x) !== Math.round(model.h2.x) ? next.h2.x : -1,
-//       y: Math.round(next.h2.y) !== Math.round(model.h2.y) ? next.h2.y : -1,
-//     },
-//     steps: next.steps !== model.steps ? next.steps : -1,
-//   };
-
-//   model = next;
-
-//   // writeSnapshot(diff);
-
-//   // writeSnapshot(model);
-//   draw(model);
-//   UrlStore.save(model);
-// }
 
 /**
  *  @typedef {Object} Codec
