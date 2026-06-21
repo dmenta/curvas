@@ -107,22 +107,113 @@ let model = {
   steps: 20,
 };
 
-/**  @param {CurveState} s */
-function writeSnapshot(s) {
-  els.h1x.value = s.h1.x;
-  els.h1y.value = s.h1.y;
-  els.h2x.value = s.h2.x;
-  els.h2y.value = s.h2.y;
-  els.steps.value = s.steps;
+const updateModelNextCalls = [updateUI, (next, _) => UrlStore.save(next)];
+
+/**
+ * @param {CurveState} next
+ * @param {function(CurveState,CurveState):void[]} [nextCallback=updateModelNextCalls]
+ * @returns {void}
+ * */
+function updateModel(next, nextCallback = updateModelNextCalls) {
+  const prev = { ...model };
+  model = next;
+
+  if (nextCallback) {
+    nextCallback.forEach((callback) => callback(model, prev));
+  }
+}
+
+/**
+ *   @param {CurveState} next
+ *   @param {CurveState} prev
+ */
+function updateUI(next, prev) {
+  Promise.all([
+    new Promise((_) => updateControls(next, prev)),
+    new Promise((_) => updateDraw(next)),
+  ]);
 }
 
 /**  @param {CurveState} next */
-function setState(next) {
-  model = next;
-  writeSnapshot(model);
-  draw(model);
-  UrlStore.save(model);
+function updateDraw(next) {
+  draw(next);
 }
+
+/**
+ *   @param {CurveState} next
+ *   @param {CurveState} prev
+ */
+function updateControls(next, prev) {
+  if (Math.round(next.h1.x) !== Math.round(prev.h1.x)) {
+    els.h1x.value = next.h1.x;
+  }
+  if (Math.round(next.h1.y) !== Math.round(prev.h1.y)) {
+    els.h1y.value = next.h1.y;
+  }
+  if (Math.round(next.h2.x) !== Math.round(prev.h2.x)) {
+    els.h2x.value = next.h2.x;
+  }
+  if (Math.round(next.h2.y) !== Math.round(prev.h2.y)) {
+    els.h2y.value = next.h2.y;
+  }
+  if (next.steps !== prev.steps) {
+    els.steps.value = next.steps;
+  }
+}
+
+// /**  @param {CurveState} s */
+// function writeSnapshot(s) {
+//   const total = s.h1.x + s.h1.y + s.h2.x + s.h2.y + s.steps;
+
+//   if (total === -5) {
+//     return;
+//   }
+
+//   if (s.h1.x !== -1) {
+//     els.h1x.value = s.h1.x;
+//   }
+//   if (s.h1.y !== -1) {
+//     els.h1y.value = s.h1.y;
+//   }
+//   if (s.h2.x !== -1) {
+//     els.h2x.value = s.h2.x;
+//   }
+//   if (s.h2.y !== -1) {
+//     els.h2y.value = s.h2.y;
+//   }
+//   if (s.steps !== -1) {
+//     els.steps.value = s.steps;
+//   }
+
+//   // els.h1x.value = s.h1.x;
+//   // els.h1y.value = s.h1.y;
+//   // els.h2x.value = s.h2.x;
+//   // els.h2y.value = s.h2.y;
+//   // els.steps.value = s.steps;
+// }
+
+// /**  @param {CurveState} next */
+// function setState(next) {
+//   const diff = {
+//     h1: {
+//       x: Math.round(next.h1.x) !== Math.round(model.h1.x) ? next.h1.x : -1,
+//       y: Math.round(next.h1.y) !== Math.round(model.h1.y) ? next.h1.y : -1,
+//     },
+//     h2: {
+//       x: Math.round(next.h2.x) !== Math.round(model.h2.x) ? next.h2.x : -1,
+//       y: Math.round(next.h2.y) !== Math.round(model.h2.y) ? next.h2.y : -1,
+//     },
+//     steps: next.steps !== model.steps ? next.steps : -1,
+//   };
+
+//   model = next;
+
+//   // writeSnapshot(diff);
+
+//   // writeSnapshot(model);
+//   draw(model);
+//   UrlStore.save(model);
+// }
 
 /**
  *  @typedef {Object} Codec
@@ -210,26 +301,26 @@ function addEventListeners() {
 
 function addSlidersEvents() {
   els.steps.addEventListener("input", () =>
-    setState({ ...model, steps: +els.steps.value }),
+    updateModel({ ...model, steps: +els.steps.value }),
   );
 
   els.h1x.addEventListener("input", () =>
-    setState({ ...model, h1: { ...model.h1, x: +els.h1x.value } }),
+    updateModel({ ...model, h1: { ...model.h1, x: +els.h1x.value } }),
   );
   els.h1y.addEventListener("input", () =>
-    setState({ ...model, h1: { ...model.h1, y: +els.h1y.value } }),
+    updateModel({ ...model, h1: { ...model.h1, y: +els.h1y.value } }),
   );
   els.h2x.addEventListener("input", () =>
-    setState({ ...model, h2: { ...model.h2, x: +els.h2x.value } }),
+    updateModel({ ...model, h2: { ...model.h2, x: +els.h2x.value } }),
   );
   els.h2y.addEventListener("input", () =>
-    setState({ ...model, h2: { ...model.h2, y: +els.h2y.value } }),
+    updateModel({ ...model, h2: { ...model.h2, y: +els.h2y.value } }),
   );
 }
 
 function addPanelControlsEvents() {
   [els.showPoints, els.showSegments].forEach((x) =>
-    x.addEventListener("input", () => draw(model)),
+    x.addEventListener("input", () => updateModel(model)),
   );
 
   els.showGrid.addEventListener("input", (e) => {
@@ -254,11 +345,11 @@ function addHandlersEvents() {
   );
 
   els.h1Grip.addEventListener("dblclick", () =>
-    setState({ ...model, h1: { x: 0, y: 30 } }),
+    updateModel({ ...model, h1: { x: 0, y: 30 } }),
   );
 
   els.h2Grip.addEventListener("dblclick", () =>
-    setState({ ...model, h2: { x: 100, y: 30 } }),
+    updateModel({ ...model, h2: { x: 100, y: 30 } }),
   );
 }
 
@@ -279,7 +370,7 @@ function addPointerEvents() {
     const p = svgPos(e);
     const key = state.drag === "h1Grip" ? "h1" : "h2";
 
-    setState({
+    updateModel({
       ...model,
       [key]: { x: round(p.x), y: round(p.y) },
     });
@@ -319,5 +410,5 @@ applyTheme(els.theme.value);
 (function initFromUrl() {
   const loaded = UrlStore.load() ?? model;
 
-  setState(loaded);
+  updateModel(loaded);
 })();
