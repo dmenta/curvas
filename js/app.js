@@ -183,10 +183,10 @@ const UrlStore = {
  * @returns {Point}
  */
 function svgPos(e) {
-  let pt = svg.createSVGPoint();
+  let pt = els.svg.createSVGPoint();
   pt.x = e.clientX;
   pt.y = e.clientY;
-  let p = pt.matrixTransform(svg.getScreenCTM().inverse());
+  let p = pt.matrixTransform(els.svg.getScreenCTM().inverse());
 
   let x = Math.max(0, Math.min(100, p.x));
   let y = Math.max(0, Math.min(100, 100 - p.y));
@@ -233,16 +233,16 @@ function addPanelControlsEvents() {
   );
 
   els.showGrid.addEventListener("input", (e) => {
-    els.grid.style.display = e.srcElement.checked ? "" : "none";
+    els.grid.style.display = e.target.checked ? "" : "none";
   });
 
   els.showHandles.addEventListener("input", (e) => {
-    els.h1Line.style.display = e.srcElement.checked ? "" : "none";
-    els.h2Line.style.display = e.srcElement.checked ? "" : "none";
+    els.h1Line.style.display = e.target.checked ? "" : "none";
+    els.h2Line.style.display = e.target.checked ? "" : "none";
   });
 
   els.showCurve.addEventListener("input", (e) => {
-    els.realCurve.style.display = e.srcElement.checked ? "" : "none";
+    els.realCurve.style.display = e.target.checked ? "" : "none";
   });
 
   els.theme.addEventListener("input", () => applyTheme(els.theme.value));
