@@ -13,61 +13,60 @@
     </head>
     <body>
         <div class="row">
-            <div class="card">
-                <h2>Bezier Visualizer v3.2</h2>
-                <label for="h1x"
-                    ><span>X<sub>i</sub></span
-                    ><input id="h1x" class="h1" type="range" min="0" max="100" value="0"
-                /></label>
-                <label for="h1y"
-                    ><span>Y<sub>i</sub></span
-                    ><input id="h1y" class="h1" type="range" min="0" max="100" value="30"
-                /></label>
-                <label for="h2x"
-                    ><span>X<sub>f</sub></span
-                    ><input id="h2x" class="h2" type="range" min="0" max="100" value="100"
-                /></label>
-                <label for="h2y"
-                    ><span>Y<sub>f</sub></span
-                    ><input id="h2y" class="h2" type="range" min="0" max="100" value="30"
-                /></label>
-                <label for="steps"
-                    >Steps<input id="steps" type="range" min="2" max="100" value="20"
-                /></label>
+            <div class="col">
+                <div class="card">
+                    <h2>Bezier Visualizer <small>v3.2</small></h2>
+                    <label for="h1x"
+                        ><span>X<sub>i</sub></span
+                        ><input id="h1x" class="h1" type="range" min="0" max="100" value="0"
+                    /></label>
+                    <label for="h1y"
+                        ><span>Y<sub>i</sub></span
+                        ><input id="h1y" class="h1" type="range" min="0" max="100" value="30"
+                    /></label>
+                    <label for="h2x"
+                        ><span>X<sub>f</sub></span
+                        ><input id="h2x" class="h2" type="range" min="0" max="100" value="100"
+                    /></label>
+                    <label for="h2y"
+                        ><span>Y<sub>f</sub></span
+                        ><input id="h2y" class="h2" type="range" min="0" max="100" value="30"
+                    /></label>
+                    <div class="row">
+                        <label><input id="showGrid" type="checkbox" checked /> Grilla</label>
+                        <label><input id="showCurve" type="checkbox" checked /> Curva</label>
+                    </div>
+                    <div class="row">
+                        <label
+                            ><input id="showHandles" type="checkbox" checked /> Líneas de
+                            control</label
+                        >
+                    </div>
 
-                <hr />
+                    <div id="info" class="small"></div>
 
-                <div class="row">
-                    <label><input id="showGrid" type="checkbox" checked /> Grilla</label>
-                    <label><input id="showCurve" type="checkbox" checked /> Curva</label>
+                    <hr />
+                    <button id="copyCss">Copiar cubic-bezier()</button>
                 </div>
-                <div class="row">
-                    <label><input id="showSegments" type="checkbox" /> Segmentos</label>
-                    <label><input id="showPoints" type="checkbox" /> Puntos</label>
+                <div class="card">
+                    <label for="steps"
+                        >Steps<input id="steps" type="range" min="2" max="100" value="20"
+                    /></label>
+                    <div class="row">
+                        <label><input id="showSegments" type="checkbox" /> Segmentos</label>
+                        <label><input id="showPoints" type="checkbox" /> Puntos</label>
+                    </div>
+                    <hr />
+                    <button id="copyJson">Copiar JSON</button>
                 </div>
-                <div class="row">
-                    <label
-                        ><input id="showHandles" type="checkbox" checked /> Líneas de control</label
-                    >
+                <div class="card">
+                    <select id="theme">
+                        <option value="system">System</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
                 </div>
-
-                <hr />
-
-                <button id="copyJson">Copiar JSON</button>
-                <button id="copyCss">Copiar cubic-bezier()</button>
-
-                <hr />
-
-                <select id="theme">
-                    <option value="system">System</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
-
-                <hr />
-                <div id="info" class="small"></div>
             </div>
-
             <div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,6 @@
 :root {
   --grid: #c8c8c8;
-  --curve-color: oklch(80.765% 0.22372 140.8);
+  --curve-color: oklch(50.765% 0.22372 140.8);
   --point-color: oklch(70.552% 0.15701 251.023);
   --segment-color: #303030;
 }
@@ -26,16 +26,16 @@ text {
 
 #points {
   circle {
-    fill: var(--point-color);
+    fill: var(--grid);
     stroke: var(--curve-color);
     stroke-width: 0.375;
-    r: .9;
+    r: .625;
   }
 }
 
 #realCurve {
   stroke: var(--curve-color);
-  stroke-width: 0.625;
+  stroke-width: 0.5;
 }
 
 #segments {
@@ -46,13 +46,13 @@ text {
 .grid-min-line {
   stroke: var(--grid);
   stroke-dasharray: .5 1;
-  stroke-width: 0.15;
+  stroke-width: 0.125;
 }
 
 
 .grid-maj-line {
   stroke: var(--grid);
-  stroke-width: 0.25;
+  stroke-width: 0.375;
 }
 
 .grid-axis-value {
