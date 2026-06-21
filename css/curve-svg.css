@@ -5,7 +5,7 @@
   --segment-color: #303030;
 }
 
-body.dark {
+:root.dark {
   --grid: #666;
   --curve-color: oklch(75.765% 0.22372 140.8);
   --point-color: oklch(65.552% 0.15701 251.023);

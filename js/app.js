@@ -180,7 +180,7 @@ function addPanelControlsEvents() {
     realCurve.style.display = showCurve.checked ? "" : "none";
   });
 
-  theme.addEventListener("input", applyTheme);
+  theme.addEventListener("input", () => applyTheme(theme.value));
 }
 
 function addHandlersEvents() {
@@ -252,7 +252,7 @@ function addCopyEvents() {
 }
 
 addEventListeners();
-applyTheme();
+applyTheme(theme.value);
 
 (function initFromUrl() {
   const loaded = UrlStore.load() ?? model;

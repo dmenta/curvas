@@ -1,14 +1,16 @@
-function applyTheme() {
-  document.body.classList.remove("dark");
+/**
+ *
+ * @param {"dark"|"light"|"system"} mode
+ */
+function applyTheme(mode) {
   if (
-    theme.value === "dark" ||
-    (theme.value === "system" &&
-      matchMedia("(prefers-color-scheme: dark)").matches)
-  )
-    document.body.classList.add("dark");
-
-  realCurve.setAttribute(
-    "stroke",
-    document.body.classList.contains("dark") ? "white" : "black",
-  );
+    mode === "dark" ||
+    (mode === "system" && matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    document.documentElement.classList.add("dark");
+    colorScheme.content = "dark";
+  } else {
+    document.documentElement.classList.remove("dark");
+    colorScheme.content = "light";
+  }
 }
