@@ -107,19 +107,42 @@ let model = {
   steps: 20,
 };
 
-const updateModelNextCalls = [updateUI, (next) => UrlStore.save(next)];
+/** @type {Array<function(CurveState, CurveState): void>} */
+const modelListeners = [updateUI];
 
 /**
  * @param {CurveState} next
- * @param {function(CurveState):void[]} [nextCallback=updateModelNextCalls]
- * @returns {void}
- * */
-function updateModel(next, nextCallback = updateModelNextCalls) {
+ */
+function updateModel(next) {
+  const prev = model;
   model = next;
+  modelListeners.forEach((listener) => listener(model, prev));
+}
 
-  if (nextCallback) {
-    nextCallback.forEach((callback) => callback(model));
-  }
+/**
+ * @param {CurveState} next
+ * @param {CurveState} prev
+ */
+function updateUI(next, prev) {
+  updateControls(next, prev);
+  updateDraw(next);
+}
+
+/**
+ * @param {CurveState} next
+ * @param {CurveState} prev
+ */
+function updateControls(next, prev) {
+  if (next.h1.x !== prev.h1.x) els.h1x.value = next.h1.x;
+  if (next.h1.y !== prev.h1.y) els.h1y.value = next.h1.y;
+  if (next.h2.x !== prev.h2.x) els.h2x.value = next.h2.x;
+  if (next.h2.y !== prev.h2.y) els.h2y.value = next.h2.y;
+  if (next.steps !== prev.steps) els.steps.value = next.steps;
+}
+
+/** @param {CurveState} next */
+function updateDraw(next) {
+  draw(next);
 }
 
 /**
@@ -237,8 +260,8 @@ function addSlidersEvents() {
     updateModel({ ...model, steps: +els.steps.value }),
   );
 
-  els.h1x.addEventListener("input", () =>
-    updateModel({ ...model, h1: { ...model.h1, x: +els.h1x.value } }),
+  els.h1x.addEventListener("input", () => 
+    updateModel({ ...model, h1: { ...model.h1, x: +els.h1x.value } });
   );
   els.h1y.addEventListener("input", () =>
     updateModel({ ...model, h1: { ...model.h1, y: +els.h1y.value } }),
@@ -315,10 +338,19 @@ function addPointerEvents() {
     els.tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
   });
 
+  // pointerup
   window.addEventListener("pointerup", () => {
     state.drag = null;
     els.tip.style.display = "none";
+    Estado.save(model); // ← acá
   });
+
+  // sliders — en change, no en input
+  els.h1x.addEventListener("change", () => Estado.save(model));
+  els.h1y.addEventListener("change", () => Estado.save(model));
+  els.h2x.addEventListener("change", () => Estado.save(model));
+  els.h2y.addEventListener("change", () => Estado.save(model));
+  els.steps.addEventListener("change", () => Estado.save(model));
 }
 
 function addCopyEvents() {
