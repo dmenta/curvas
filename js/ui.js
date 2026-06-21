@@ -4,27 +4,27 @@ const gridSize = 100;
 /**  @type {number}     */
 const desplazamientoLabel = 1.5;
 
-/** @param {CurveState} curveState */
-function draw(curveState) {
-  updateRealCurve(curveState);
+/** @param {CurveState} state */
+function draw(state) {
+  updateRealCurve(state);
 
-  updateHandler(h1Grip, h1Line, curveState.h1);
-  updateHandler(h2Grip, h2Line, curveState.h2);
+  updateHandler(h1Grip, h1Line, state.h1);
+  updateHandler(h2Grip, h2Line, state.h2);
 
-  updateHandlerLabel(h1label, curveState.h1, "H1");
-  updateHandlerLabel(h2label, curveState.h2, "H2");
+  updateHandlerLabel(h1label, state.h1, "H1");
+  updateHandlerLabel(h2label, state.h2, "H2");
 
-  drawSegments(curveState);
-  drawPoints(curveState);
+  drawSegments(state);
+  drawPoints(state);
 
-  updateInfo(curveState);
+  updateInfo(state);
 }
 
-/** @param {CurveState} curveState */
-function updateRealCurve(curveState) {
+/** @param {CurveState} state */
+function updateRealCurve(state) {
   realCurve.setAttribute(
     "d",
-    `M 0 100 C ${curveState.h1.x} ${100 - curveState.h1.y}, ${curveState.h2.x} ${100 - curveState.h2.y}, 100 0`,
+    `M 0 100 C ${state.h1.x} ${100 - state.h1.y}, ${state.h2.x} ${100 - state.h2.y}, 100 0`,
   );
   /* <path fill="none" stroke="red" d="M 0,100 C 5,80 18,65 50,50 S 70,30 100,0"/> */
 }
@@ -52,27 +52,27 @@ function updateHandler(gripElem, lineElem, pos) {
   lineElem.setAttribute("y2", gridSize - pos.y);
 }
 
-/**  @param {CurveState} curveState */
-function updateInfo(curveState) {
+/**  @param {CurveState} state */
+function updateInfo(state) {
   if (info.classList.contains("hidden")) {
     return;
   }
 
   const pointsInfo =
     showSegments.checked || showPoints.checked
-      ? `<b>Puntos generados:</b> ${bezierPoints(curveState).length}<br>`
+      ? `<b>Puntos generados:</b> ${bezierPoints(state).length}<br>`
       : "";
 
   info.innerHTML = `
     ${pointsInfo}  
-    <b>Control inicial:</b> (${curveState.h1.x.toFixed(2)}, ${curveState.h1.y.toFixed(2)})<br>
-    <b>Control final:</b> (${curveState.h2.x.toFixed(2)}, ${curveState.h2.y.toFixed(2)})<br>
-    <b>CSS:</b> cubic-bezier(${(curveState.h1.x / 100).toFixed(2)}, ${(curveState.h1.y / 100).toFixed(2)}, ${(curveState.h2.x / 100).toFixed(2)}, ${(curveState.h2.y / 100).toFixed(2)})
+    <b>Control inicial:</b> (${state.h1.x.toFixed(2)}, ${state.h1.y.toFixed(2)})<br>
+    <b>Control final:</b> (${state.h2.x.toFixed(2)}, ${state.h2.y.toFixed(2)})<br>
+    <b>CSS:</b> cubic-bezier(${(state.h1.x / 100).toFixed(2)}, ${(state.h1.y / 100).toFixed(2)}, ${(state.h2.x / 100).toFixed(2)}, ${(state.h2.y / 100).toFixed(2)})
     `;
 }
 
-/**  @param {CurveState} curveState */
-function drawSegments(curveState) {
+/**  @param {CurveState} state */
+function drawSegments(state) {
   if (!showSegments.checked) {
     segments.classList.add("hidden");
     return;
@@ -80,22 +80,22 @@ function drawSegments(curveState) {
 
   segments.setAttribute(
     "points",
-    bezierPoints(curveState)
+    bezierPoints(state)
       .map((p) => `${p.x.toFixed(2)},${(100 - p.y).toFixed(2)}`)
       .join(" "),
   );
   segments.classList.remove("hidden");
 }
 
-/**  @param {CurveState} curveState */
-function drawPoints(curveState) {
+/**  @param {CurveState} state */
+function drawPoints(state) {
   if (!showPoints.checked) {
     points.classList.add("hidden");
     return;
   }
 
   const elemCount = points.children.length;
-  const dataPoints = bezierPoints(curveState);
+  const dataPoints = bezierPoints(state);
 
   dataPoints.map((p, i) => {
     const values = { x: p.x.toFixed(2), y: (gridSize - p.y).toFixed(2) };

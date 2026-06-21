@@ -42,15 +42,6 @@ let model = {
   steps: 20,
 };
 
-/**  @returns {CurveState} */
-function readSnapshot() {
-  return {
-    h1: { x: +h1x.value, y: +h1y.value },
-    h2: { x: +h2x.value, y: +h2y.value },
-    steps: +steps.value,
-  };
-}
-
 /**  @param {CurveState} s */
 function writeSnapshot(s) {
   h1x.value = s.h1.x;
@@ -144,6 +135,7 @@ function svgPos(e) {
 }
 
 function addEventListeners() {
+  addSlidersEvents();
   addPanelControlsEvents();
   addHandlersEvents();
   addKeyboardEvents();
@@ -151,31 +143,43 @@ function addEventListeners() {
   addCopyEvents();
 }
 
-function addPanelControlsEvents() {
-  document
-    .querySelectorAll("input[type=range]")
-    .forEach((x) =>
-      x.addEventListener("input", () => setState(readSnapshot())),
-    );
+function addSlidersEvents() {
+  steps.addEventListener("input", () =>
+    setState({ ...model, steps: +steps.value }),
+  );
 
+  h1x.addEventListener("input", () =>
+    setState({ ...model, h1: { ...model.h1, x: +h1x.value } }),
+  );
+  h1y.addEventListener("input", () =>
+    setState({ ...model, h1: { ...model.h1, y: +h1y.value } }),
+  );
+  h2x.addEventListener("input", () =>
+    setState({ ...model, h2: { ...model.h2, x: +h2x.value } }),
+  );
+  h2y.addEventListener("input", () =>
+    setState({ ...model, h2: { ...model.h2, y: +h2y.value } }),
+  );
+}
+
+function addPanelControlsEvents() {
   [showPoints, showSegments].forEach((x) =>
     x.addEventListener("input", () => draw(model)),
   );
 
-  showGrid.addEventListener(
-    "input",
-    () => (grid.style.display = showGrid.checked ? "" : "none"),
-  );
+  showGrid.addEventListener("input", () => {
+    grid.style.display = showGrid.checked ? "" : "none";
+  });
 
   showHandles.addEventListener("input", () => {
     h1Line.style.display = showHandles.checked ? "" : "none";
     h2Line.style.display = showHandles.checked ? "" : "none";
   });
 
-  showCurve.addEventListener(
-    "input",
-    () => (realCurve.style.display = showCurve.checked ? "" : "none"),
-  );
+  showCurve.addEventListener("input", () => {
+    realCurve.style.display = showCurve.checked ? "" : "none";
+  });
+
   theme.addEventListener("input", applyTheme);
 }
 
@@ -185,17 +189,17 @@ function addHandlersEvents() {
   );
 
   h1Grip.addEventListener("dblclick", () => {
-    const s = readSnapshot();
-    s.h1.x = 0;
-    s.h1.y = 30;
-    setState(s);
+    setState({
+      ...model,
+      h1: { x: 0, y: 30 },
+    });
   });
 
   h2Grip.addEventListener("dblclick", () => {
-    const s = readSnapshot();
-    s.h2.x = 100;
-    s.h2.y = 30;
-    setState(s);
+    setState({
+      ...model,
+      h2: { x: 100, y: 30 },
+    });
   });
 }
 
@@ -211,28 +215,21 @@ function addKeyboardEvents() {
 
 function addPointerEvents() {
   window.addEventListener("pointermove", (e) => {
-    if (!state.drag) {
-      return;
-    }
+    if (!state.drag) return;
 
-    let p = svgPos(e);
+    const p = svgPos(e);
+    const key = state.drag === "h1Grip" ? "h1" : "h2";
 
-    const s = readSnapshot();
+    setState({
+      ...model,
+      [key]: { x: round(p.x), y: round(p.y) },
+    });
 
-    if (state.drag === "h1Grip") {
-      s.h1.x = round(p.x);
-      s.h1.y = round(p.y);
-    } else {
-      s.h2.x = round(p.x);
-      s.h2.y = round(p.y);
-    }
-
+    // tip es UI pura, no toca model, está bien acá
     tip.style.display = "block";
     tip.style.left = e.clientX + 12 + "px";
     tip.style.top = e.clientY + 12 + "px";
     tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
-
-    setState(s);
   });
 
   window.addEventListener("pointerup", () => {
@@ -258,8 +255,7 @@ addEventListeners();
 applyTheme();
 
 (function initFromUrl() {
-  const loaded = UrlStore.load();
-  if (!loaded) return;
+  const loaded = UrlStore.load() ?? model;
 
   setState(loaded);
 })();
