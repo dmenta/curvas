@@ -31,6 +31,34 @@ const state = {
     shiftPressed: false,
 };
 
+let model = {
+    h1: { x: 30, y: 90 },
+    h2: { x: 60, y: 20 },
+    steps: 20,
+};
+
+function readSnapshot() {
+    return {
+        h1: { x: +h1x.value, y: +h1y.value },
+        h2: { x: +h2x.value, y: +h2y.value },
+        steps: +steps.value,
+    };
+}
+function writeSnapshot(s) {
+    h1x.value = s.h1.x;
+    h1y.value = s.h1.y;
+    h2x.value = s.h2.x;
+    h2y.value = s.h2.y;
+    steps.value = s.steps;
+}
+
+function setState(next) {
+    model = next;
+    writeSnapshot(model);
+    draw(model);
+    UrlStore.save(model);
+}
+
 const CurveCodec = {
     encode(state) {
         return {
@@ -66,30 +94,6 @@ const UrlStore = {
     },
 };
 
-function render() {
-    const state = getCurveState();
-    draw(state);
-    UrlStore.save(state);
-}
-
-/**
- *
- * @returns {CurveState}
- */
-function getCurveState() {
-    return {
-        h1: {
-            x: +h1x.value,
-            y: +h1y.value,
-        },
-        h2: {
-            x: +h2x.value,
-            y: +h2y.value,
-        },
-        steps: +steps.value,
-    };
-}
-
 /**
  * @param {PointerEvent} e
  * @returns {Point}
@@ -122,9 +126,9 @@ function addEventListeners() {
 function addPanelControlsEvents() {
     document
         .querySelectorAll('input[type=range]')
-        .forEach((x) => x.addEventListener('input', render));
+        .forEach((x) => x.addEventListener('input', () => setState(readSnapshot())));
 
-    [showPoints, showSegments].forEach((x) => x.addEventListener('input', render));
+    [showPoints, showSegments].forEach((x) => x.addEventListener('input', () => draw(model)));
 
     showGrid.addEventListener('input', () => (grid.style.display = showGrid.checked ? '' : 'none'));
 
@@ -146,15 +150,17 @@ function addHandlersEvents() {
     );
 
     h1Grip.addEventListener('dblclick', () => {
-        h1x.value = 0;
-        h1y.value = 30;
-        render();
+        const s = readSnapshot();
+        s.h1.x = 0;
+        s.h1.y = 30;
+        setState(s);
     });
 
     h2Grip.addEventListener('dblclick', () => {
-        h2x.value = 100;
-        h2y.value = 30;
-        render();
+        const s = readSnapshot();
+        s.h2.x = 100;
+        s.h2.y = 30;
+        setState(s);
     });
 }
 
@@ -176,12 +182,14 @@ function addPointerEvents() {
 
         let p = svgPos(e);
 
+        const s = readSnapshot();
+
         if (state.drag === 'h1Grip') {
-            h1x.value = p.x;
-            h1y.value = p.y;
+            s.h1.x = round(p.x);
+            s.h1.y = round(p.y);
         } else {
-            h2x.value = p.x;
-            h2y.value = p.y;
+            s.h2.x = round(p.x);
+            s.h2.y = round(p.y);
         }
 
         tip.style.display = 'block';
@@ -189,7 +197,7 @@ function addPointerEvents() {
         tip.style.top = e.clientY + 12 + 'px';
         tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
 
-        render();
+        setState(s);
     });
 
     window.addEventListener('pointerup', () => {
@@ -200,28 +208,23 @@ function addPointerEvents() {
 
 function addCopyEvents() {
     copyJson.onclick = () =>
-        copyWithFeedback(copyJson, JSON.stringify(bezierPoints(getCurveState()), null, 2));
+        copyWithFeedback(copyJson, JSON.stringify(bezierPoints(model), null, 2));
 
-    copyCss.onclick = () =>
+    copyCss.onclick = () => {
+        const s = model;
         copyWithFeedback(
             copyCss,
-            `cubic-bezier(${(+h1x.value / 100).toFixed(2)}, ${(+h1y.value / 100).toFixed(2)}, ${(+h2x.value / 100).toFixed(2)}, ${(+h2y.value / 100).toFixed(2)})`,
+            `cubic-bezier(${(s.h1.x / 100).toFixed(2)}, ${(s.h1.y / 100).toFixed(2)}, ${(s.h2.x / 100).toFixed(2)}, ${(s.h2.y / 100).toFixed(2)})`,
         );
+    };
 }
 
 addEventListeners();
 applyTheme();
-//render();
 
 (function initFromUrl() {
-    const state = UrlStore.load();
-    if (!state) return;
+    const loaded = UrlStore.load();
+    if (!loaded) return;
 
-    h1x.value = state.h1.x;
-    h1y.value = state.h1.y;
-    h2x.value = state.h2.x;
-    h2y.value = state.h2.y;
-    steps.value = state.steps;
-
-    draw(state);
+    setState(loaded);
 })();
