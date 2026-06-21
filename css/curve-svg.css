@@ -21,7 +21,7 @@ svg {
 text {
   pointer-events: none;
   user-select: none;
-  fill: var(--fg)
+  fill: var(--fg);
 }
 
 #points {
@@ -29,7 +29,7 @@ text {
     fill: var(--grid);
     stroke: var(--curve-color);
     stroke-width: 0.375;
-    r: .625;
+    r: 0.625;
   }
 }
 
@@ -45,10 +45,9 @@ text {
 
 .grid-min-line {
   stroke: var(--grid);
-  stroke-dasharray: .5 1;
+  stroke-dasharray: 0.5 1;
   stroke-width: 0.125;
 }
-
 
 .grid-maj-line {
   stroke: var(--grid);
@@ -56,11 +55,10 @@ text {
 }
 
 .grid-axis-value {
-  font-size: .15em;
-  opacity: .85;
+  font-size: 0.15em;
+  opacity: 0.85;
   font-weight: 300;
 }
-
 
 .handler-line {
   stroke-width: 0.35;
@@ -76,23 +74,22 @@ text {
 
 @keyframes pulseHalo {
   0% {
-    opacity: .25;
+    opacity: 0.25;
   }
 
   50% {
-    opacity: .65;
+    opacity: 0.65;
   }
 
   100% {
-    opacity: .25;
+    opacity: 0.25;
   }
 }
 
 .handler-values {
-  font-size: .15em;
+  font-size: 0.15em;
   fill: var(--fg);
 }
-
 
 #h1Grip {
   color: var(--h1-color);

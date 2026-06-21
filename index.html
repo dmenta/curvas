@@ -1,175 +1,249 @@
 <!doctype html>
 <html lang="es">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Bezier Visualizer</title>
-        <link rel="stylesheet" href="css/styles.css" />
-        <link rel="stylesheet" href="css/curve-svg.css" />
-        <script src="js/bezier.js" defer></script>
-        <script src="js/ui.js" defer></script>
-        <script src="js/theme.js" defer></script>
-        <script src="js/app.js" defer></script>
-    </head>
-    <body>
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <h2>Bezier Visualizer <small>v3.2</small></h2>
-                    <label for="h1x"
-                        ><span>X<sub>i</sub></span
-                        ><input id="h1x" class="h1" type="range" min="0" max="100" value="0"
-                    /></label>
-                    <label for="h1y"
-                        ><span>Y<sub>i</sub></span
-                        ><input id="h1y" class="h1" type="range" min="0" max="100" value="30"
-                    /></label>
-                    <label for="h2x"
-                        ><span>X<sub>f</sub></span
-                        ><input id="h2x" class="h2" type="range" min="0" max="100" value="100"
-                    /></label>
-                    <label for="h2y"
-                        ><span>Y<sub>f</sub></span
-                        ><input id="h2y" class="h2" type="range" min="0" max="100" value="30"
-                    /></label>
-                    <div class="row">
-                        <label><input id="showGrid" type="checkbox" checked /> Grilla</label>
-                        <label><input id="showCurve" type="checkbox" checked /> Curva</label>
-                    </div>
-                    <div class="row">
-                        <label
-                            ><input id="showHandles" type="checkbox" checked /> Líneas de
-                            control</label
-                        >
-                    </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Bezier Visualizer</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/curve-svg.css" />
+    <script src="js/bezier.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/theme.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h2>Bezier Visualizer <small>v3.2</small></h2>
+          <label for="h1x"
+            ><span>X<sub>i</sub></span
+            ><input
+              id="h1x"
+              class="h1"
+              type="range"
+              min="0"
+              max="100"
+              value="0"
+          /></label>
+          <label for="h1y"
+            ><span>Y<sub>i</sub></span
+            ><input
+              id="h1y"
+              class="h1"
+              type="range"
+              min="0"
+              max="100"
+              value="30"
+          /></label>
+          <label for="h2x"
+            ><span>X<sub>f</sub></span
+            ><input
+              id="h2x"
+              class="h2"
+              type="range"
+              min="0"
+              max="100"
+              value="100"
+          /></label>
+          <label for="h2y"
+            ><span>Y<sub>f</sub></span
+            ><input
+              id="h2y"
+              class="h2"
+              type="range"
+              min="0"
+              max="100"
+              value="30"
+          /></label>
+          <div class="row">
+            <label
+              ><input id="showGrid" type="checkbox" checked /> Grilla</label
+            >
+            <label
+              ><input id="showCurve" type="checkbox" checked /> Curva</label
+            >
+          </div>
+          <div class="row">
+            <label
+              ><input id="showHandles" type="checkbox" checked /> Líneas de
+              control</label
+            >
+          </div>
 
-                    <div id="info" class="small"></div>
+          <div id="info" class="small"></div>
 
-                    <hr />
-                    <button id="copyCss">Copiar cubic-bezier()</button>
-                </div>
-                <div class="card">
-                    <label for="steps"
-                        >Steps<input id="steps" type="range" min="2" max="100" value="20"
-                    /></label>
-                    <div class="row">
-                        <label><input id="showSegments" type="checkbox" /> Segmentos</label>
-                        <label><input id="showPoints" type="checkbox" /> Puntos</label>
-                    </div>
-                    <hr />
-                    <button id="copyJson">Copiar JSON</button>
-                </div>
-                <div class="card">
-                    <select id="theme">
-                        <option value="system">System</option>
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    id="svg"
-                    width="560"
-                    height="560"
-                    viewBox="0 0 100 100">
-                    <defs>
-                        <symbol
-                            id="handlerGrip"
-                            x="-4"
-                            y="-4"
-                            width="8"
-                            height="8"
-                            viewBox="0 0 8 8">
-                            <circle
-                                class="handler-grip-halo"
-                                r="3.0"
-                                cx="4"
-                                cy="4"
-                                stroke="currentColor"
-                                fill="none" />
-                            <circle
-                                class="handler-grip-point"
-                                fill="currentColor"
-                                r="1.8"
-                                cx="4"
-                                cy="4" />
-                        </symbol>
-                        <line id="maj-v-line" x1="0" y1="0" x2="0" y2="100" class="grid-maj-line" />
-                        <line id="maj-h-line" x1="0" y1="0" x2="100" y2="0" class="grid-maj-line" />
-                        <line id="min-v-line" x1="0" y1="0" x2="0" y2="100" class="grid-min-line" />
-                        <line id="min-h-line" x1="0" y1="0" x2="100" y2="0" class="grid-min-line" />
-                    </defs>
-                    <g id="grid">
-                        <use href="#maj-v-line" x="0" y="0" />
-                        <use href="#maj-v-line" x="50" y="0" />
-                        <use href="#maj-v-line" x="100" y="0" />
-                        <use href="#maj-h-line" x="0" y="0" />
-                        <use href="#maj-h-line" x="0" y="50" />
-                        <use href="#maj-h-line" x="0" y="100" />
-                        <use href="#min-v-line" x="10" y="0" />
-                        <use href="#min-v-line" x="20" y="0" />
-                        <use href="#min-v-line" x="30" y="0" />
-                        <use href="#min-v-line" x="40" y="0" />
-                        <use href="#min-v-line" x="60" y="0" />
-                        <use href="#min-v-line" x="70" y="0" />
-                        <use href="#min-v-line" x="80" y="0" />
-                        <use href="#min-v-line" x="90" y="0" />
-                        <use href="#min-h-line" x="0" y="10" />
-                        <use href="#min-h-line" x="0" y="20" />
-                        <use href="#min-h-line" x="0" y="30" />
-                        <use href="#min-h-line" x="0" y="40" />
-                        <use href="#min-h-line" x="0" y="60" />
-                        <use href="#min-h-line" x="0" y="70" />
-                        <use href="#min-h-line" x="0" y="80" />
-                        <use href="#min-h-line" x="0" y="90" />
-                        <text x="0.5" y="9.5" class="grid-axis-value">90</text>
-                        <text x="0.5" y="19.5" class="grid-axis-value">80</text>
-                        <text x="0.5" y="29.5" class="grid-axis-value">70</text>
-                        <text x="0.5" y="39.5" class="grid-axis-value">60</text>
-                        <text x="0.5" y="49.5" class="grid-axis-value">50</text>
-                        <text x="0.5" y="59.5" class="grid-axis-value">40</text>
-                        <text x="0.5" y="69.5" class="grid-axis-value">30</text>
-                        <text x="0.5" y="79.5" class="grid-axis-value">20</text>
-                        <text x="0.5" y="89.5" class="grid-axis-value">10</text>
-                        <text x="0.5" y="99.5" class="grid-axis-value">0</text>
-                        <text x="10.5" y="99.5" class="grid-axis-value">10</text>
-                        <text x="20.5" y="99.5" class="grid-axis-value">20</text>
-                        <text x="30.5" y="99.5" class="grid-axis-value">30</text>
-                        <text x="40.5" y="99.5" class="grid-axis-value">40</text>
-                        <text x="50.5" y="99.5" class="grid-axis-value">50</text>
-                        <text x="60.5" y="99.5" class="grid-axis-value">60</text>
-                        <text x="70.5" y="99.5" class="grid-axis-value">70</text>
-                        <text x="80.5" y="99.5" class="grid-axis-value">80</text>
-                        <text x="90.5" y="99.5" class="grid-axis-value">90</text>
-                    </g>
-
-                    <path id="realCurve" fill="none" />
-                    <polyline id="segments" fill="none"></polyline>
-                    <g id="points"></g>
-
-                    <g id="controls">
-                        <line x1="0" y1="100" x2="30" y2="90" id="h1Line" class="handler-line" />
-                        <line x1="100" y1="0" x2="60" y2="20" id="h2Line" class="handler-line" />
-                    </g>
-
-                    <use href="#handlerGrip" id="h1Grip" x="30" y="90"></use>
-                    <text id="h1label" class="handler-values" />
-                    <use href="#handlerGrip" id="h2Grip" x="60" y="20"></use>
-                    <text id="h2label" class="handler-values" />
-
-                    <!-- test -->
-                    <path
-                        fill="none"
-                        stroke="goldenrod"
-                        class="hidden"
-                        d="M 0,100  C 0,60 20,70 50,60  C 80,50 100,40 100,0" />
-                </svg>
-            </div>
+          <hr />
+          <button id="copyCss">Copiar cubic-bezier()</button>
         </div>
+        <div class="card">
+          <label for="steps"
+            >Steps<input id="steps" type="range" min="2" max="100" value="20"
+          /></label>
+          <div class="row">
+            <label><input id="showSegments" type="checkbox" /> Segmentos</label>
+            <label><input id="showPoints" type="checkbox" /> Puntos</label>
+          </div>
+          <hr />
+          <button id="copyJson">Copiar JSON</button>
+        </div>
+        <div class="card">
+          <select id="theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          id="svg"
+          width="560"
+          height="560"
+          viewBox="0 0 100 100"
+        >
+          <defs>
+            <symbol
+              id="handlerGrip"
+              x="-4"
+              y="-4"
+              width="8"
+              height="8"
+              viewBox="0 0 8 8"
+            >
+              <circle
+                class="handler-grip-halo"
+                r="3.0"
+                cx="4"
+                cy="4"
+                stroke="currentColor"
+                fill="none"
+              />
+              <circle
+                class="handler-grip-point"
+                fill="currentColor"
+                r="1.8"
+                cx="4"
+                cy="4"
+              />
+            </symbol>
+            <line
+              id="maj-v-line"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="100"
+              class="grid-maj-line"
+            />
+            <line
+              id="maj-h-line"
+              x1="0"
+              y1="0"
+              x2="100"
+              y2="0"
+              class="grid-maj-line"
+            />
+            <line
+              id="min-v-line"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="100"
+              class="grid-min-line"
+            />
+            <line
+              id="min-h-line"
+              x1="0"
+              y1="0"
+              x2="100"
+              y2="0"
+              class="grid-min-line"
+            />
+          </defs>
+          <g id="grid">
+            <use href="#maj-v-line" x="0" y="0" />
+            <use href="#maj-v-line" x="50" y="0" />
+            <use href="#maj-v-line" x="100" y="0" />
+            <use href="#maj-h-line" x="0" y="0" />
+            <use href="#maj-h-line" x="0" y="50" />
+            <use href="#maj-h-line" x="0" y="100" />
+            <use href="#min-v-line" x="10" y="0" />
+            <use href="#min-v-line" x="20" y="0" />
+            <use href="#min-v-line" x="30" y="0" />
+            <use href="#min-v-line" x="40" y="0" />
+            <use href="#min-v-line" x="60" y="0" />
+            <use href="#min-v-line" x="70" y="0" />
+            <use href="#min-v-line" x="80" y="0" />
+            <use href="#min-v-line" x="90" y="0" />
+            <use href="#min-h-line" x="0" y="10" />
+            <use href="#min-h-line" x="0" y="20" />
+            <use href="#min-h-line" x="0" y="30" />
+            <use href="#min-h-line" x="0" y="40" />
+            <use href="#min-h-line" x="0" y="60" />
+            <use href="#min-h-line" x="0" y="70" />
+            <use href="#min-h-line" x="0" y="80" />
+            <use href="#min-h-line" x="0" y="90" />
+            <text x="0.5" y="9.5" class="grid-axis-value">90</text>
+            <text x="0.5" y="19.5" class="grid-axis-value">80</text>
+            <text x="0.5" y="29.5" class="grid-axis-value">70</text>
+            <text x="0.5" y="39.5" class="grid-axis-value">60</text>
+            <text x="0.5" y="49.5" class="grid-axis-value">50</text>
+            <text x="0.5" y="59.5" class="grid-axis-value">40</text>
+            <text x="0.5" y="69.5" class="grid-axis-value">30</text>
+            <text x="0.5" y="79.5" class="grid-axis-value">20</text>
+            <text x="0.5" y="89.5" class="grid-axis-value">10</text>
+            <text x="0.5" y="99.5" class="grid-axis-value">0</text>
+            <text x="10.5" y="99.5" class="grid-axis-value">10</text>
+            <text x="20.5" y="99.5" class="grid-axis-value">20</text>
+            <text x="30.5" y="99.5" class="grid-axis-value">30</text>
+            <text x="40.5" y="99.5" class="grid-axis-value">40</text>
+            <text x="50.5" y="99.5" class="grid-axis-value">50</text>
+            <text x="60.5" y="99.5" class="grid-axis-value">60</text>
+            <text x="70.5" y="99.5" class="grid-axis-value">70</text>
+            <text x="80.5" y="99.5" class="grid-axis-value">80</text>
+            <text x="90.5" y="99.5" class="grid-axis-value">90</text>
+          </g>
 
-        <div class="tooltip" id="tip"></div>
-    </body>
+          <path id="realCurve" fill="none" />
+          <polyline id="segments" fill="none"></polyline>
+          <g id="points"></g>
+
+          <g id="controls">
+            <line
+              x1="0"
+              y1="100"
+              x2="30"
+              y2="90"
+              id="h1Line"
+              class="handler-line"
+            />
+            <line
+              x1="100"
+              y1="0"
+              x2="60"
+              y2="20"
+              id="h2Line"
+              class="handler-line"
+            />
+          </g>
+
+          <use href="#handlerGrip" id="h1Grip" x="30" y="90"></use>
+          <text id="h1label" class="handler-values" />
+          <use href="#handlerGrip" id="h2Grip" x="60" y="20"></use>
+          <text id="h2label" class="handler-values" />
+
+          <!-- test -->
+          <path
+            fill="none"
+            stroke="goldenrod"
+            class="hidden"
+            d="M 0,100  C 0,60 20,70 50,60  C 80,50 100,40 100,0"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <div class="tooltip" id="tip"></div>
+  </body>
 </html>
-
