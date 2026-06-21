@@ -31,6 +31,47 @@ const state = {
     shiftPressed: false,
 };
 
+const CurveCodec = {
+    encode(state) {
+        return {
+            h1x: state.h1.x,
+            h1y: state.h1.y,
+            h2x: state.h2.x,
+            h2y: state.h2.y,
+            steps: state.steps,
+        };
+    },
+
+    decode(params) {
+        return {
+            h1: { x: +params.h1x, y: +params.h1y },
+            h2: { x: +params.h2x, y: +params.h2y },
+            steps: +params.steps || 20,
+        };
+    },
+};
+
+const UrlStore = {
+    save(state) {
+        const encoded = CurveCodec.encode(state);
+        const qs = new URLSearchParams(encoded).toString();
+        history.replaceState(null, '', '?' + qs);
+    },
+
+    load() {
+        const params = new URLSearchParams(window.location.search);
+        if (![...params.keys()].length) return null;
+
+        return CurveCodec.decode(Object.fromEntries(params.entries()));
+    },
+};
+
+function render() {
+    const state = getCurveState();
+    draw(state);
+    UrlStore.save(state);
+}
+
 /**
  *
  * @returns {CurveState}
@@ -81,11 +122,9 @@ function addEventListeners() {
 function addPanelControlsEvents() {
     document
         .querySelectorAll('input[type=range]')
-        .forEach((x) => x.addEventListener('input', () => draw(getCurveState())));
+        .forEach((x) => x.addEventListener('input', render));
 
-    [showPoints, showSegments].forEach((x) =>
-        x.addEventListener('input', () => draw(getCurveState())),
-    );
+    [showPoints, showSegments].forEach((x) => x.addEventListener('input', render));
 
     showGrid.addEventListener('input', () => (grid.style.display = showGrid.checked ? '' : 'none'));
 
@@ -109,13 +148,13 @@ function addHandlersEvents() {
     h1Grip.addEventListener('dblclick', () => {
         h1x.value = 0;
         h1y.value = 30;
-        draw(getCurveState());
+        render();
     });
 
     h2Grip.addEventListener('dblclick', () => {
         h2x.value = 100;
         h2y.value = 30;
-        draw(getCurveState());
+        render();
     });
 }
 
@@ -150,7 +189,7 @@ function addPointerEvents() {
         tip.style.top = e.clientY + 12 + 'px';
         tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
 
-        draw(getCurveState());
+        render();
     });
 
     window.addEventListener('pointerup', () => {
@@ -172,4 +211,17 @@ function addCopyEvents() {
 
 addEventListeners();
 applyTheme();
-draw(getCurveState());
+//render();
+
+(function initFromUrl() {
+    const state = UrlStore.load();
+    if (!state) return;
+
+    h1x.value = state.h1.x;
+    h1y.value = state.h1.y;
+    h2x.value = state.h2.x;
+    h2y.value = state.h2.y;
+    steps.value = state.steps;
+
+    draw(state);
+})();
