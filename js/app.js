@@ -2,7 +2,7 @@ import { els } from "./elements.js";
 import { bezierPoints, round } from "./bezier.js";
 import { UrlStore } from "./url-store.js";
 import { applyTheme } from "./theme.js";
-import { draw } from "./ui.js";
+import { draw, copyWithFeedback } from "./ui.js";
 import { Estado } from "./estado.js";
 import { UndoStack } from "./undo.js";
 
@@ -124,6 +124,7 @@ function addSlidersEvents() {
   els.h1y.addEventListener("input", () =>
     updateModel({ ...model, h1: { ...model.h1, y: +els.h1y.value } }),
   );
+
   els.h2x.addEventListener("input", () =>
     updateModel({ ...model, h2: { ...model.h2, x: +els.h2x.value } }),
   );
@@ -134,7 +135,7 @@ function addSlidersEvents() {
 
 function addPanelControlsEvents() {
   [els.showPoints, els.showSegments].forEach((x) =>
-    x.addEventListener("input", () => updateModel(model)),
+    x.addEventListener("input", () => updateDraw(model)),
   );
 
   els.showGrid.addEventListener("input", (e) => {
@@ -213,14 +214,12 @@ function addPointerEvents() {
       [key]: { x: round(p.x), y: round(p.y) },
     });
 
-    // tip es UI pura, no toca model, está bien acá
     els.tip.style.display = "block";
     els.tip.style.left = e.clientX + 12 + "px";
     els.tip.style.top = e.clientY + 12 + "px";
     els.tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
   });
 
-  // pointerup
   window.addEventListener("pointerup", () => {
     if (!state.drag) {
       return;
@@ -228,10 +227,9 @@ function addPointerEvents() {
 
     state.drag = null;
     els.tip.style.display = "none";
-    Estado.save(model); // ← acá
+    Estado.save(model);
   });
 
-  // sliders — en change, no en input
   els.h1x.addEventListener("change", () => Estado.save(model));
   els.h1y.addEventListener("change", () => Estado.save(model));
   els.h2x.addEventListener("change", () => Estado.save(model));
@@ -261,5 +259,5 @@ applyTheme(els.theme.value);
 (function init() {
   const loaded = UrlStore.load() ?? model;
   updateModel(loaded);
-  Estado.apply(loaded);
+  Estado.save(loaded);
 })();
