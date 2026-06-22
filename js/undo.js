@@ -1,4 +1,4 @@
-import "./utils.js";
+import { peek } from "./utils.js";
 
 export const UndoStack = {
   /**
@@ -11,41 +11,28 @@ export const UndoStack = {
 
   /** @param {CurveState} estado */
   push(estado) {
-    const current = this.past.peek();
-    if (current && sonEstadosIguales(current, estado)) {
-      return;
-    }
-
+    if (peek(this.past) && sonEstadosIguales(peek(this.past), estado)) return;
     this.past.push(estado);
     this.future = [];
   },
 
   /** @returns {CurveState|null} */
   undo() {
-    if (this.past.length < 2) {
-      return null;
-    }
-
+    if (this.past.length < 2) return null;
     const pastEstado = this.past.pop();
-
-    if (!sonEstadosIguales(this.future.peek(), pastEstado)) {
+    if (!sonEstadosIguales(peek(this.future), pastEstado)) {
       this.future.push(pastEstado);
     }
-
-    return this.past.peek();
+    return peek(this.past);
   },
 
   /** @returns {CurveState|null} */
   redo() {
     const futureEstado = this.future.pop();
-    if (futureEstado === undefined) {
-      return null;
-    }
-
-    if (!sonEstadosIguales(this.past.peek(), futureEstado)) {
+    if (futureEstado === undefined) return null;
+    if (!sonEstadosIguales(peek(this.past), futureEstado)) {
       this.past.push(futureEstado);
     }
-
     return futureEstado;
   },
 };
@@ -56,7 +43,7 @@ export const UndoStack = {
  * @param {CurveState|undefined} b
  * @returns {boolean}
  */
-function sonEstadosIguales(a, b) {
+export function sonEstadosIguales(a, b) {
   if (!a || !b) {
     return false;
   }

@@ -1,6 +1,6 @@
-Array.prototype.peek = function () {
-  if (this.length > 0) {
-    return this.at(-1);
-  }
-  return undefined;
-};
+/**
+ * @template T
+ * @param {T[]|null|undefined} arr
+ * @returns {T|undefined}
+ */
+export const peek = (arr) => arr?.at(-1);

@@ -134,7 +134,7 @@ function drawPoints(state) {
  *  @param {HTMLButtonElement} button
  *  @param {string} text
  */
-async function copyWithFeedback(button, text) {
+export async function copyWithFeedback(button, text) {
   await navigator.clipboard.writeText(text);
   const original = button.textContent;
 
