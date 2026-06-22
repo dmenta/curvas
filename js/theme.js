@@ -1,8 +1,10 @@
+import { els } from "./elements.js";
+
 /**
  *
  * @param {"dark"|"light"|"system"} mode
  */
-function applyTheme(mode) {
+export function applyTheme(mode) {
   if (
     mode === "dark" ||
     (mode === "system" && matchMedia("(prefers-color-scheme: dark)").matches)

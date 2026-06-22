@@ -1,3 +1,6 @@
+import { els } from "./elements.js";
+import { bezierPoints, round } from "./bezier.js";
+
 /**  @type {number}     */
 const gridSize = 100;
 
@@ -5,7 +8,7 @@ const gridSize = 100;
 const desplazamientoLabel = 1.5;
 
 /** @param {CurveState} state */
-function draw(state) {
+export function draw(state) {
   updateRealCurve(state);
 
   updateHandler(els.h1Grip, els.h1Line, state.h1);

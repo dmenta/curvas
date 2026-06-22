@@ -2,7 +2,7 @@
  * @param {number} v
  * @returns {number}
  */
-function round(v) {
+export function round(v) {
   return Math.round(v * 100) / 100;
 }
 
@@ -10,7 +10,7 @@ function round(v) {
  * @param {CurveState} state
  * @returns {Point[]}
  */
-function bezierPoints(state) {
+export function bezierPoints(state) {
   let pts = [];
   for (let t = 0; t <= state.steps; t++) {
     let tn = t / state.steps,

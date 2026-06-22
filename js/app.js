@@ -1,3 +1,11 @@
+import { els } from "./elements.js";
+import { bezierPoints, round } from "./bezier.js";
+import { UrlStore } from "./url-store.js";
+import { applyTheme } from "./theme.js";
+import { draw } from "./ui.js";
+import { Estado } from "./estado.js";
+import { UndoStack } from "./undo.js";
+
 /**
  * @typedef {Object} Point
  * @property {number} x
@@ -28,76 +36,6 @@
 const state = {
   drag: null,
   shiftPressed: false,
-};
-
-const els = {
-  // Sliders h1
-  /** @type {HTMLInputElement} */
-  h1x: document.getElementById("h1x"),
-  /** @type {HTMLInputElement} */
-  h1y: document.getElementById("h1y"),
-  // Sliders h2
-  /** @type {HTMLInputElement} */
-  h2x: document.getElementById("h2x"),
-  /** @type {HTMLInputElement} */
-  h2y: document.getElementById("h2y"),
-  // Slider steps
-  /** @type {HTMLInputElement} */
-  steps: document.getElementById("steps"),
-
-  // Checkboxes
-  /** @type {HTMLInputElement} */
-  showGrid: document.getElementById("showGrid"),
-  /** @type {HTMLInputElement} */
-  showCurve: document.getElementById("showCurve"),
-  /** @type {HTMLInputElement} */
-  showHandles: document.getElementById("showHandles"),
-  /** @type {HTMLInputElement} */
-  showSegments: document.getElementById("showSegments"),
-  /** @type {HTMLInputElement} */
-  showPoints: document.getElementById("showPoints"),
-
-  // Botones
-  /** @type {HTMLButtonElement} */
-  copyCss: document.getElementById("copyCss"),
-  /** @type {HTMLButtonElement} */
-  copyJson: document.getElementById("copyJson"),
-
-  //SVG
-  /** @type {SVGSVGElement} */
-  svg: document.getElementById("svg"),
-  /** @type {SVGPathElement} */
-  realCurve: document.getElementById("realCurve"),
-  /** @type {SVGPolylineElement} */
-  segments: document.getElementById("segments"),
-  /** @type {SVGGElement} */
-  points: document.getElementById("points"),
-  /** @type {SVGGElement} */
-  grid: document.getElementById("grid"),
-  /** @type {SVGGElement} */
-  controls: document.getElementById("controls"),
-  /** @type {SVGUseElement} */
-  h1Grip: document.getElementById("h1Grip"),
-  /** @type {SVGUseElement} */
-  h2Grip: document.getElementById("h2Grip"),
-  /** @type {SVGLineElement} */
-  h1Line: document.getElementById("h1Line"),
-  /** @type {SVGLineElement} */
-  h2Line: document.getElementById("h2Line"),
-  /** @type {SVGTextElement} */
-  h1label: document.getElementById("h1label"),
-  /** @type {SVGTextElement} */
-  h2label: document.getElementById("h2label"),
-
-  // UI
-  /** @type {HTMLDivElement} */
-  info: document.getElementById("info"),
-  /** @type {HTMLDivElement} */
-  tip: document.getElementById("tip"),
-  /** @type {HTMLSelectElement} */
-  theme: document.getElementById("theme"),
-  /** @type {HTMLMetaElement} */
-  colorScheme: document.getElementById("colorScheme"),
 };
 
 /** @type {CurveState} */
@@ -146,86 +84,6 @@ function updateDraw(next) {
 }
 
 /**
- *   @param {CurveState} next
- *   @param {CurveState} prev
- */
-function updateUI(next) {
-  updateControls(next);
-  updateDraw(next);
-}
-
-/**  @param {CurveState} next */
-function updateDraw(next) {
-  draw(next);
-}
-
-/**
- *   @param {CurveState} next
- *   @param {CurveState} prev
- */
-function updateControls(next) {
-  els.h1x.value = next.h1.x;
-  els.h1y.value = next.h1.y;
-  els.h2x.value = next.h2.x;
-  els.h2y.value = next.h2.y;
-  els.steps.value = next.steps;
-}
-
-/**
- *  @typedef {Object} Codec
- * @property {function(CurveState): Object} encode
- * @property {function(Object): CurveState} decode
- */
-const CurveCodec = {
-  /**
-   *  @param {CurveState} state
-   *  @returns {StateMessage}
-   */
-  encode(state) {
-    return {
-      h1x: state.h1.x,
-      h1y: state.h1.y,
-      h2x: state.h2.x,
-      h2y: state.h2.y,
-      steps: state.steps,
-    };
-  },
-
-  /**
-   * @param {StateMessage} params
-   * @returns {CurveState}
-   */
-  decode(params) {
-    return {
-      h1: { x: +params.h1x, y: +params.h1y },
-      h2: { x: +params.h2x, y: +params.h2y },
-      steps: +params.steps || 20,
-    };
-  },
-};
-
-/**
- *  @typedef {Object} Store
- * @property {function(CurveState): void} save
- * @property {function(): CurveState|null} load
- */
-const UrlStore = {
-  /** @param {CurveState} state */
-  save(state) {
-    const encoded = CurveCodec.encode(state);
-    const qs = new URLSearchParams(encoded).toString();
-    history.replaceState(null, "", "?" + qs);
-  },
-  /** @returns {CurveState|null} */
-  load() {
-    const params = new URLSearchParams(window.location.search);
-    if (![...params.keys()].length) return null;
-
-    return CurveCodec.decode(Object.fromEntries(params.entries()));
-  },
-};
-
-/**
  * @param {PointerEvent} e
  * @returns {Point}
  */
@@ -260,8 +118,8 @@ function addSlidersEvents() {
     updateModel({ ...model, steps: +els.steps.value }),
   );
 
-  els.h1x.addEventListener("input", () => 
-    updateModel({ ...model, h1: { ...model.h1, x: +els.h1x.value } });
+  els.h1x.addEventListener("input", () =>
+    updateModel({ ...model, h1: { ...model.h1, x: +els.h1x.value } }),
   );
   els.h1y.addEventListener("input", () =>
     updateModel({ ...model, h1: { ...model.h1, y: +els.h1y.value } }),
@@ -311,17 +169,35 @@ function addHandlersEvents() {
 
 function addKeyboardEvents() {
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Shift") state.shiftPressed = true;
+    if (e.key === "Shift") {
+      state.shiftPressed = true;
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+      e.preventDefault();
+      const prev = UndoStack.undo();
+      if (prev) updateModel(prev);
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key === "y") {
+      e.preventDefault();
+      const next = UndoStack.redo();
+      if (next) updateModel(next);
+    }
   });
 
   window.addEventListener("keyup", (e) => {
-    if (e.key === "Shift") state.shiftPressed = false;
+    if (e.key === "Shift") {
+      state.shiftPressed = false;
+    }
   });
 }
 
 function addPointerEvents() {
   window.addEventListener("pointermove", (e) => {
-    if (!state.drag) return;
+    if (!state.drag) {
+      return;
+    }
 
     const p = svgPos(e);
     const key = state.drag === "h1Grip" ? "h1" : "h2";
@@ -340,6 +216,10 @@ function addPointerEvents() {
 
   // pointerup
   window.addEventListener("pointerup", () => {
+    if (!state.drag) {
+      return;
+    }
+
     state.drag = null;
     els.tip.style.display = "none";
     Estado.save(model); // ← acá
