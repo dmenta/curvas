@@ -1,11 +1,12 @@
 import { els } from "./elements.js";
-import { bezierPoints, round } from "./bezier.js";
+import { bezierPoints } from "./bezier.js";
 import { UrlStore } from "./url-store.js";
 import { applyTheme } from "./theme.js";
 import { draw, copyWithFeedback } from "./ui.js";
 import { Estado } from "./estado.js";
 import { UndoStack } from "./undo.js";
 import { poblarPresets, poblarMisCurvas, guardarCurva } from "./library.js";
+import { round } from "./utils.js";
 
 /**
  * @typedef {Object} Point

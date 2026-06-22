@@ -23,3 +23,11 @@ export function sonEstadosIguales(a, b) {
     a.steps === b.steps
   );
 }
+
+/**
+ * @param {number} v
+ * @returns {number}
+ */
+export function round(v) {
+  return Math.round(v * 100) / 100;
+}

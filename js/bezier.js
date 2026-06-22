@@ -1,10 +1,4 @@
-/**
- * @param {number} v
- * @returns {number}
- */
-export function round(v) {
-  return Math.round(v * 100) / 100;
-}
+import { round } from "./utils.js";
 
 /**
  * @param {CurveState} state

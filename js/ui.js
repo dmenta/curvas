@@ -1,5 +1,6 @@
 import { els } from "./elements.js";
-import { bezierPoints, round } from "./bezier.js";
+import { bezierPoints } from "./bezier.js";
+import { round } from "./utils.js";
 
 /**  @type {number}     */
 const gridSize = 100;
