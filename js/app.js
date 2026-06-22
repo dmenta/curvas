@@ -176,13 +176,19 @@ function addKeyboardEvents() {
     if ((e.ctrlKey || e.metaKey) && e.key === "z") {
       e.preventDefault();
       const prev = UndoStack.undo();
-      if (prev) updateModel(prev);
+      if (prev) {
+        updateModel(prev);
+        Estado.apply(prev);
+      }
     }
 
     if ((e.ctrlKey || e.metaKey) && e.key === "y") {
       e.preventDefault();
       const next = UndoStack.redo();
-      if (next) updateModel(next);
+      if (next) {
+        updateModel(next);
+        Estado.apply(next);
+      }
     }
   });
 
@@ -252,8 +258,8 @@ function addCopyEvents() {
 addEventListeners();
 applyTheme(els.theme.value);
 
-(function initFromUrl() {
+(function init() {
   const loaded = UrlStore.load() ?? model;
-
   updateModel(loaded);
+  Estado.apply(loaded);
 })();
