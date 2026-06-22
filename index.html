@@ -86,6 +86,36 @@
           <button id="copyJson">Copiar JSON</button>
         </div>
         <div class="card">
+          <select id="curvas">
+            <option value="" disabled selected>Seleccionar curva...</option>
+            <optgroup label="Presets" id="grupoPresets">
+              <!-- poblado desde JS -->
+            </optgroup>
+            <optgroup label="Mis curvas" id="grupoMisCurvas">
+              <!-- poblado desde localStorage -->
+            </optgroup>
+          </select>
+          <div class="row" style="margin-top: 8px; align-items: center">
+            <input
+              id="curvaNombre"
+              type="text"
+              placeholder="Nombre..."
+              style="
+                flex: 1;
+                padding: 8px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                background: var(--bg);
+                color: var(--fg);
+                font-size: 14px;
+              "
+            />
+            <button id="guardarCurva" style="width: auto; padding: 8px 12px">
+              Guardar
+            </button>
+          </div>
+        </div>
+        <div class="card">
           <select id="theme">
             <option value="system">System</option>
             <option value="light">Light</option>

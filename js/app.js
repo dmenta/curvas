@@ -5,6 +5,7 @@ import { applyTheme } from "./theme.js";
 import { draw, copyWithFeedback } from "./ui.js";
 import { Estado } from "./estado.js";
 import { UndoStack } from "./undo.js";
+import { poblarPresets, poblarMisCurvas, guardarCurva } from "./library.js";
 
 /**
  * @typedef {Object} Point
@@ -111,6 +112,23 @@ function addEventListeners() {
   addKeyboardEvents();
   addPointerEvents();
   addCopyEvents();
+  addLibraryEvents();
+}
+
+function addLibraryEvents() {
+  els.curvas.addEventListener("change", () => {
+    const model = JSON.parse(els.curvas.value);
+    updateModel(model);
+    Estado.save(model);
+    els.curvas.value = ""; // reset select
+  });
+
+  els.guardarCurva.addEventListener("click", () => {
+    const nombre = els.curvaNombre.value.trim();
+    if (!nombre) return;
+    guardarCurva(nombre, model);
+    els.curvaNombre.value = "";
+  });
 }
 
 function addSlidersEvents() {
@@ -255,6 +273,8 @@ function addCopyEvents() {
 
 addEventListeners();
 applyTheme(els.theme.value);
+poblarPresets();
+poblarMisCurvas();
 
 (function init() {
   const loaded = UrlStore.load() ?? model;

@@ -66,4 +66,15 @@ export const els = {
   theme: document.getElementById("theme"),
   /** @type {HTMLMetaElement} */
   colorScheme: document.getElementById("colorScheme"),
+
+  /** @type {HTMLDivElement} */
+  curvas: document.getElementById("curvas"),
+  /** @type {HTMLOptGroupElement} */
+  grupoPresets: document.getElementById("grupoPresets"),
+  /** @type {HTMLOptGroupElement} */
+  grupoMisCurvas: document.getElementById("grupoMisCurvas"),
+  /** @type {HTMLInputElement} */
+  curvaNombre: document.getElementById("curvaNombre"),
+  /** @type {HTMLButtonElement} */
+  guardarCurva: document.getElementById("guardarCurva"),
 };
