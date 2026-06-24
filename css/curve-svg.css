@@ -15,9 +15,9 @@ svg {
 }
 
 text {
+  fill: var(--fg);
   pointer-events: none;
   user-select: none;
-  fill: var(--fg);
 }
 
 #realCurve {
@@ -37,9 +37,9 @@ text {
 }
 
 .grid-axis-value {
-  font-size: 0.15em;
   opacity: 0.85;
   font-weight: 300;
+  font-size: 0.15em;
 }
 
 .handler-line {
@@ -69,8 +69,8 @@ text {
 }
 
 .handler-values {
-  font-size: 0.15em;
   fill: var(--fg);
+  font-size: 0.15em;
 }
 
 #h1Grip {
@@ -99,19 +99,19 @@ text {
   }
 
   .handler-grip-point {
-    r: 1.8;
-    cursor: grab;
     transition:
       r 120ms ease,
       filter 120ms ease;
+    cursor: grab;
+    r: 1.8;
   }
 
   .handler-grip-halo {
+    opacity: 0;
     transition:
       r 120ms ease,
       opacity 120ms ease;
     r: 3.65;
-    opacity: 0;
     stroke-width: 0.5;
   }
 }
