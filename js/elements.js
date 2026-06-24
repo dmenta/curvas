@@ -9,9 +9,6 @@ export const els = {
   h2x: document.getElementById("h2x"),
   /** @type {HTMLInputElement} */
   h2y: document.getElementById("h2y"),
-  // Slider steps
-  /** @type {HTMLInputElement} */
-  steps: document.getElementById("steps"),
 
   // Checkboxes
   /** @type {HTMLInputElement} */
@@ -20,26 +17,16 @@ export const els = {
   showCurve: document.getElementById("showCurve"),
   /** @type {HTMLInputElement} */
   showHandles: document.getElementById("showHandles"),
-  /** @type {HTMLInputElement} */
-  showSegments: document.getElementById("showSegments"),
-  /** @type {HTMLInputElement} */
-  showPoints: document.getElementById("showPoints"),
 
   // Botones
   /** @type {HTMLButtonElement} */
   copyCss: document.getElementById("copyCss"),
-  /** @type {HTMLButtonElement} */
-  copyJson: document.getElementById("copyJson"),
 
   //SVG
   /** @type {SVGSVGElement} */
   svg: document.getElementById("svg"),
   /** @type {SVGPathElement} */
   realCurve: document.getElementById("realCurve"),
-  /** @type {SVGPolylineElement} */
-  segments: document.getElementById("segments"),
-  /** @type {SVGGElement} */
-  points: document.getElementById("points"),
   /** @type {SVGGElement} */
   grid: document.getElementById("grid"),
   /** @type {SVGGElement} */

@@ -1,10 +1,9 @@
 import { els } from "./elements.js";
-import { model, updateModel, updateDraw } from "./model.js";
+import { model, updateModel } from "./model.js";
 import { Estado } from "./estado.js";
 import { applyTheme } from "./theme.js";
 import { round } from "./utils.js";
 import { copyWithFeedback } from "./ui.js";
-import { bezierPoints } from "./bezier.js";
 import { UndoStack } from "./undo.js";
 import { guardarCurva } from "./library.js";
 
@@ -20,29 +19,12 @@ const state = {
 
 export function addEventListeners() {
   addSlidersEvents();
-  //addSegmentsEvents();
   addPanelControlsEvents();
   addHandlersEvents();
   addKeyboardEvents();
   addPointerEvents();
   addCopyEvents();
   addLibraryEvents();
-}
-
-function addSegmentsEvents() {
-  [els.showPoints, els.showSegments].forEach((x) =>
-    x.addEventListener("input", () => updateDraw(model)),
-  );
-  els.steps.addEventListener("input", () =>
-    updateModel({ ...model, steps: +els.steps.value }),
-  );
-  els.steps.addEventListener("change", () => Estado.save(model));
-
-  els.copyJson.onclick = () =>
-    copyWithFeedback(
-      els.copyJson,
-      JSON.stringify(bezierPoints(model), null, 2),
-    );
 }
 
 function addSlidersEvents() {
