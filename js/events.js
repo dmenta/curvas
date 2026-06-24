@@ -20,6 +20,7 @@ const state = {
 
 export function addEventListeners() {
   addSlidersEvents();
+  //addSegmentsEvents();
   addPanelControlsEvents();
   addHandlersEvents();
   addKeyboardEvents();
@@ -28,10 +29,23 @@ export function addEventListeners() {
   addLibraryEvents();
 }
 
-function addSlidersEvents() {
+function addSegmentsEvents() {
+  [els.showPoints, els.showSegments].forEach((x) =>
+    x.addEventListener("input", () => updateDraw(model)),
+  );
   els.steps.addEventListener("input", () =>
     updateModel({ ...model, steps: +els.steps.value }),
   );
+  els.steps.addEventListener("change", () => Estado.save(model));
+
+  els.copyJson.onclick = () =>
+    copyWithFeedback(
+      els.copyJson,
+      JSON.stringify(bezierPoints(model), null, 2),
+    );
+}
+
+function addSlidersEvents() {
   els.h1x.addEventListener("input", () =>
     updateModel({ ...model, h1: { ...model.h1, x: +els.h1x.value } }),
   );
@@ -47,9 +61,6 @@ function addSlidersEvents() {
 }
 
 function addPanelControlsEvents() {
-  [els.showPoints, els.showSegments].forEach((x) =>
-    x.addEventListener("input", () => updateDraw(model)),
-  );
   els.showGrid.addEventListener("input", (e) => {
     els.grid.style.display = e.target.checked ? "" : "none";
   });
@@ -122,15 +133,9 @@ function addPointerEvents() {
   els.h1y.addEventListener("change", () => Estado.save(model));
   els.h2x.addEventListener("change", () => Estado.save(model));
   els.h2y.addEventListener("change", () => Estado.save(model));
-  els.steps.addEventListener("change", () => Estado.save(model));
 }
 
 function addCopyEvents() {
-  els.copyJson.onclick = () =>
-    copyWithFeedback(
-      els.copyJson,
-      JSON.stringify(bezierPoints(model), null, 2),
-    );
   els.copyCss.onclick = () => {
     const s = model;
     copyWithFeedback(

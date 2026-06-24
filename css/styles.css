@@ -7,6 +7,9 @@
   --h1-color: orange;
   --h2-color: deepskyblue;
   --font-family: "Segoe UI", Arial, sans-serif;
+  --controles-width: 300px;
+  --main-width: 960px;
+  --gap-width: 16px;
 }
 
 :root.dark {
@@ -18,41 +21,56 @@
   --h2-color: deepskyblue;
 }
 
+#stepsCard,
 #info,
 label:has(#showHandles) {
   display: none;
 }
 
 body {
-  margin: 0;
-  padding: 16px;
-  font-family: var(--font-family);
-  background-color: var(--bg);
   color: var(--fg);
+  background-color: var(--bg);
+  height: 100svh;
+  width: 100svw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-family);
 }
 
-.col {
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+main {
+  width: var(--main-width);
+  height: calc(100svh - calc(var(--gap-width) * 2));
+  margin: var(--gap-width) auto;
+  overflow: hidden;
+  display: grid;
+  gap: var(--gap-width);
+  grid-template-columns: var(--controles-width) 1fr;
+  align-items: start;
+}
+
+#controles,
+#canvas {
+  overflow: hidden;
+}
+#controles > div {
+  margin-bottom: calc(var(--gap-width) / 2);
 }
 
 .row {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: var(--gap-width);
+  flex-wrap: wrap-reverse;
   flex-direction: row;
   align-items: flex-start;
 }
 
 .card {
-  width: 280px;
+  width: auto;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 8px 14px;
+  padding: var(--gap-width) calc(var(--gap-width) / 2);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 

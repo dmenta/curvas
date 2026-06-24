@@ -12,8 +12,8 @@
 </head>
 
 <body>
-  <div class="row">
-    <div class="col">
+  <main>
+    <div id="controles">
       <div class="card">
         <h2>
           Bezier Visualizer
@@ -69,7 +69,7 @@
         <hr />
         <button id="copyCss">Copiar cubic-bezier()</button>
       </div>
-      <div class="card">
+      <div class="card" id="stepsCard">
         <label for="steps">
           Steps
           <input id="steps" type="range" min="2" max="100" value="20" />
@@ -120,8 +120,8 @@
         </select>
       </div>
     </div>
-    <div>
-      <svg xmlns="http://www.w3.org/2000/svg" id="svg" width="560" height="560" viewBox="0 0 100 100">
+    <div id="canvas">
+      <svg xmlns="http://www.w3.org/2000/svg" id="svg" viewBox="0 0 100 100">
         <defs>
           <symbol id="handlerGrip" x="-4" y="-4" width="8" height="8" viewBox="0 0 8 8">
             <circle class="handler-grip-halo" r="3.0" cx="4" cy="4" stroke="currentColor" fill="none" />
@@ -194,7 +194,7 @@
         <path fill="none" stroke="goldenrod" class="hidden" d="M 0,100  C 0,60 20,70 50,60  C 80,50 100,40 100,0" />
       </svg>
     </div>
-  </div>
+  </main>
 
   <div class="tooltip" id="tip"></div>
 </body>

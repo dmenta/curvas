@@ -18,8 +18,8 @@ export function draw(state) {
   updateHandlerLabel(els.h1label, state.h1, "H1");
   updateHandlerLabel(els.h2label, state.h2, "H2");
 
-  drawSegments(state);
-  drawPoints(state);
+  // drawSegments(state);
+  // drawPoints(state);
 
   updateInfo(state);
 }
