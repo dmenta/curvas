@@ -26,6 +26,7 @@ const modelListeners = [updateUI];
 export function updateModel(next) {
   const prev = model;
   model = next;
+
   modelListeners.forEach((listener) => listener(model, prev));
 }
 

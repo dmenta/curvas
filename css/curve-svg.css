@@ -63,6 +63,14 @@ text {
   font-size: 0.15em;
 }
 
+#h1label {
+  color: color-mix(in srgb, var(--h1-color) 40%, var(--fg) 60%);
+}
+
+#h2label {
+  color: color-mix(in srgb, var(--h2-color) 40%, var(--fg) 60%);
+}
+
 #h1Grip {
   color: var(--h1-color);
 }

@@ -2,7 +2,7 @@ import { els } from "./elements.js";
 import { model, updateModel } from "./model.js";
 import { Estado } from "./estado.js";
 import { applyTheme } from "./theme.js";
-import { round } from "./utils.js";
+import { round, debounce } from "./utils.js";
 import { copyWithFeedback } from "./ui.js";
 import { UndoStack } from "./undo.js";
 import { guardarCurva } from "./library.js";
@@ -70,7 +70,9 @@ function addHandlersEvents() {
 
 function addKeyboardEvents() {
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Shift") state.shiftPressed = true;
+    if (e.key === "Shift") {
+      state.shiftPressed = true;
+    }
 
     if ((e.ctrlKey || e.metaKey) && e.key === "z") {
       e.preventDefault();
@@ -88,31 +90,41 @@ function addKeyboardEvents() {
     }
   });
   window.addEventListener("keyup", (e) => {
-    if (e.key === "Shift") state.shiftPressed = false;
+    if (e.key === "Shift") {
+      state.shiftPressed = false;
+    }
   });
 }
 
 function addPointerEvents() {
   window.addEventListener("pointermove", (e) => {
-    if (!state.drag) return;
+    if (!state.drag) {
+      return;
+    }
+
     const p = svgPos(e);
     const key = state.drag === "h1Grip" ? "h1" : "h2";
-    updateModel({ ...model, [key]: { x: round(p.x), y: round(p.y) } });
-    els.tip.style.display = "block";
-    els.tip.style.left = e.clientX + 12 + "px";
-    els.tip.style.top = e.clientY + 12 + "px";
-    els.tip.textContent = `${state.drag.toUpperCase()} (${round(p.x)}, ${round(p.y)})`;
+    updateModel({
+      ...model,
+      [key]: { x: round(p.x), y: round(p.y) },
+    });
   });
+
   window.addEventListener("pointerup", () => {
-    if (!state.drag) return;
+    if (!state.drag) {
+      return;
+    }
+
     state.drag = null;
-    els.tip.style.display = "none";
     Estado.save(model);
   });
-  els.h1x.addEventListener("change", () => Estado.save(model));
-  els.h1y.addEventListener("change", () => Estado.save(model));
-  els.h2x.addEventListener("change", () => Estado.save(model));
-  els.h2y.addEventListener("change", () => Estado.save(model));
+
+  [els.h1x, els.h1y, els.h2x, els.h2y].forEach((el) =>
+    el.addEventListener(
+      "change",
+      debounce(() => Estado.save(model), 100),
+    ),
+  );
 }
 
 function addCopyEvents() {
@@ -131,9 +143,13 @@ function addLibraryEvents() {
     Estado.apply(next);
     els.curvas.value = "";
   });
+
   els.guardarCurva.addEventListener("click", () => {
     const nombre = els.curvaNombre.value.trim();
-    if (!nombre) return;
+    if (!nombre) {
+      return;
+    }
+
     guardarCurva(nombre, model);
     els.curvaNombre.value = "";
   });

@@ -80,17 +80,6 @@ button.copied {
   pointer-events: none;
 }
 
-.tooltip {
-  display: none;
-  position: fixed;
-  border-radius: var(--space-1);
-  background: #000;
-  padding: var(--space-1) var(--space-2);
-  pointer-events: none;
-  color: #fff;
-  font-size: 12px;
-}
-
 .small {
   opacity: 0.85;
   font-size: 12px;

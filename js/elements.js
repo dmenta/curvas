@@ -47,8 +47,6 @@ export const els = {
   // UI
   /** @type {HTMLDivElement} */
   info: document.getElementById("info"),
-  /** @type {HTMLDivElement} */
-  tip: document.getElementById("tip"),
   /** @type {HTMLSelectElement} */
   theme: document.getElementById("theme"),
   /** @type {HTMLMetaElement} */

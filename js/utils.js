@@ -36,5 +36,15 @@ export function sonPointsIguales(a, b) {
  * @returns {number}
  */
 export function round(v) {
-  return Math.round(v * 100) / 100;
+  return Math.round(v * 5) / 5;
+}
+
+export function debounce(callback, delay) {
+  let timer;
+  return function () {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      callback();
+    }, delay);
+  };
 }

@@ -4,9 +4,6 @@ import { round } from "./utils.js";
 /**  @type {number}     */
 const gridSize = 100;
 
-/**  @type {number}     */
-const desplazamientoLabel = 1.5;
-
 /** @param {CurveState} state */
 export function draw(state) {
   updateRealCurve(state);
@@ -34,9 +31,17 @@ function updateRealCurve(state) {
  * @param {string} tag
  */
 function updateHandlerLabel(elem, pos, tag) {
-  elem.setAttribute("x", pos.x + desplazamientoLabel);
-  elem.setAttribute("y", gridSize - pos.y - desplazamientoLabel);
-  elem.textContent = `${tag} (${round(pos.x)},${round(pos.y)})`;
+  const limiteX = (tag === "H1" ? 0.82 : 0.18) * gridSize;
+  const limiteY = (tag === "H1" ? 0.97 : 0.03) * gridSize;
+
+  const anchor = pos.x < limiteX ? "start" : "end";
+  const horizontalOffset = anchor === "start" ? 2 : -2;
+  const verticalOffset = pos.y < limiteY ? -1.2 : 1.7;
+
+  elem.setAttribute("text-anchor", anchor);
+  elem.setAttribute("x", round(pos.x) + horizontalOffset);
+  elem.setAttribute("y", gridSize - round(pos.y) + verticalOffset);
+  elem.textContent = `X: ${round(pos.x).toFixed(1)}, Y: ${round(pos.y).toFixed(1)}`;
 }
 
 /**

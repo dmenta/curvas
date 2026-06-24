@@ -11,28 +11,35 @@ export const UndoStack = {
 
   /** @param {CurveState} estado */
   push(estado) {
-    if (peek(this.past) && sonEstadosIguales(peek(this.past), estado)) return;
+    if (peek(this.past) && sonEstadosIguales(peek(this.past), estado)) {
+      return;
+    }
+
     this.past.push(estado);
     this.future = [];
   },
 
   /** @returns {CurveState|null} */
   undo() {
-    if (this.past.length < 2) return null;
-    const pastEstado = this.past.pop();
-    if (!sonEstadosIguales(peek(this.future), pastEstado)) {
-      this.future.push(pastEstado);
+    if (this.past.length < 2) {
+      return null;
     }
+
+    const pastEstado = this.past.pop();
+    this.future.push(pastEstado);
+
     return peek(this.past);
   },
 
   /** @returns {CurveState|null} */
   redo() {
     const futureEstado = this.future.pop();
-    if (futureEstado === undefined) return null;
-    if (!sonEstadosIguales(peek(this.past), futureEstado)) {
-      this.past.push(futureEstado);
+    if (futureEstado === undefined) {
+      return null;
     }
+
+    this.past.push(futureEstado);
+
     return futureEstado;
   },
 };
