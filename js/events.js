@@ -76,7 +76,6 @@ function addKeyboardEvents() {
       e.preventDefault();
       const prev = UndoStack.undo();
       if (prev) {
-        updateModel(prev);
         Estado.apply(prev);
       }
     }
@@ -84,7 +83,6 @@ function addKeyboardEvents() {
       e.preventDefault();
       const next = UndoStack.redo();
       if (next) {
-        updateModel(next);
         Estado.apply(next);
       }
     }
@@ -130,8 +128,7 @@ function addCopyEvents() {
 function addLibraryEvents() {
   els.curvas.addEventListener("change", () => {
     const next = JSON.parse(els.curvas.value);
-    updateModel(next);
-    Estado.save(next);
+    Estado.apply(next);
     els.curvas.value = "";
   });
   els.guardarCurva.addEventListener("click", () => {
