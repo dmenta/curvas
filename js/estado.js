@@ -1,7 +1,8 @@
 import { UrlStore } from "./url-store.js";
 import { UndoStack } from "./undo.js";
 import { updateModel } from "./model.js";
-import { animar } from "./animator.js";
+import { animacionTiming } from "./animator.js";
+import { ajustarRegla } from "./regla.js";
 
 export const Estado = {
   /** @param {CurveState} state */
@@ -20,5 +21,6 @@ export const Estado = {
 const saveListeners = [
   (state) => UrlStore.save(state),
   (state) => UndoStack.push(state),
-  (state) => animar(state),
+  (state) => animacionTiming(state),
+  (state) => ajustarRegla(state),
 ];
