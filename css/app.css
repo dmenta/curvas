@@ -4,14 +4,10 @@
   --body-height: 100svh;
   --gap-width: 16px;
   --controles-width: 300px;
-  --animador-height: 32px;
+  --animador-width: 64px;
   --main-height: calc(var(--body-height) - calc(var(--gap-width) * 2));
-  --canvas-size: calc(
-    var(--main-height) - var(--animador-height) - var(--gap-width)
-  );
-  --main-width: calc(
-    var(--controles-width) + var(--canvas-size) + var(--gap-width)
-  );
+  --canvas-size: var(--main-height);
+  --bola-size: calc(var(--animador-width) * 0.75);
 
   /* colores tema */
   --panel: #f3f3f3;
@@ -42,14 +38,13 @@ body {
 
 main {
   display: grid;
-  grid-template-rows: var(--canvas-size) var(--animador-height);
-  grid-template-columns: var(--controles-width) var(--canvas-size);
-  grid-template-areas:
-    "controles canvas"
-    "controles animador";
+  grid-template-columns: var(--controles-width) var(--canvas-size) var(
+      --animador-width
+    );
+  grid-template-areas: "controles canvas animador";
   gap: var(--gap-width);
   margin: var(--gap-width) auto;
-  width: var(--main-width);
+  width: fit-content;
   height: var(--main-height);
 }
 
@@ -63,23 +58,84 @@ main {
 
 #canvas {
   grid-area: canvas;
-  width: var(--canvas-size);
 }
 
 #animador {
+  display: flex;
+  position: relative;
   grid-area: animador;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--panel);
-  height: var(--animador-height);
+  align-items: center;
+  width: var(--animador-width);
+  height: calc(var(--canvas-size) * 0.75);
   overflow: hidden;
 }
 
+/* The animation code */
+@keyframes animacionPulso {
+  0% {
+    filter: invert(1);
+  }
+  2% {
+    filter: initial;
+  }
+  48% {
+    filter: initial;
+  }
+  50% {
+    filter: invert(1);
+  }
+  52% {
+    filter: initial;
+  }
+  98% {
+    filter: initial;
+  }
+  100% {
+    filter: invert(1);
+  }
+}
+/* The animation code */
+@keyframes animacionBola {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: calc(100% - calc(var(--bola-size)));
+  }
+  100% {
+    top: 0;
+  }
+}
+
+#animadorBolaShadow,
 #animadorBola {
+  --curva-timing: linear;
+  position: absolute;
+  top: 0;
+  left: calc(calc(var(--animador-width) - var(--bola-size)) / 2);
+  transform: translateY(0);
+  animation-duration: 1.75s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
   border-radius: 50%;
   background: var(--accent);
-  width: 24px;
-  height: 24px;
+  width: var(--bola-size);
+  height: var(--bola-size);
+}
+
+#animadorBola {
+  animation-timing-function: var(--curva-timing), steps(1, end);
+  animation-name: animacionBola, animacionPulso;
+}
+
+#animadorBolaShadow {
+  opacity: 0.3;
+  z-index: -1;
+  animation-timing-function: linear;
+  animation-name: animacionBola;
+  box-sizing: border-box;
+  border: 4px solid var(--accent);
+  background: var(--bg);
 }
 
 #guardarCurva {

@@ -64,4 +64,9 @@ export const els = {
   curvaNombre: document.getElementById("curvaNombre"),
   /** @type {HTMLButtonElement} */
   guardarCurva: document.getElementById("guardarCurva"),
+
+  /** @type {HTMLDivElement} */
+  animador: document.getElementById("animador"),
+  /** @type {HTMLDivElement} */
+  animadorBola: document.getElementById("animadorBola"),
 };

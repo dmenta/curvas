@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bezier Visualizer</title>
   <meta id="colorScheme" name="color-scheme" content="dark" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/elements.css" />
+  <link rel="stylesheet" href="css/app.css" />
   <link rel="stylesheet" href="css/curve-svg.css" />
   <script src="js/app.js" type="module"></script>
 </head>
@@ -79,19 +80,9 @@
             <!-- poblado desde localStorage -->
           </optgroup>
         </select>
-        <div class="row" style="margin-top: 8px; align-items: center">
-          <input id="curvaNombre" type="text" placeholder="Nombre..." style="
-                flex: 1;
-                padding: 8px;
-                border-radius: 8px;
-                border: 1px solid var(--border);
-                background: var(--bg);
-                color: var(--fg);
-                font-size: 14px;
-              " />
-          <button id="guardarCurva" style="width: auto; padding: 8px 12px">
-            Guardar
-          </button>
+        <div class="row">
+          <input id="curvaNombre" type="text" placeholder="Nombre..." />
+          <button id="guardarCurva"> Guardar </button>
         </div>
       </div>
       <div class="card">
@@ -173,6 +164,10 @@
         <!-- test -->
         <path fill="none" stroke="goldenrod" class="hidden" d="M 0,100  C 0,60 20,70 50,60  C 80,50 100,40 100,0" />
       </svg>
+    </div>
+    <div id="animador">
+      <div id="animadorBola"></div>
+      <div id="animadorBolaShadow"></div>
     </div>
   </main>
 
