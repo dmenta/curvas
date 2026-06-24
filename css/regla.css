@@ -1,0 +1,19 @@
+#regla {
+  position: relative;
+  grid-column: 3;
+  width: var(--regla-width);
+  height: var(--canvas-size);
+}
+
+.reglaPunto {
+  --altura-marca: 2px;
+  position: absolute;
+  transform: translateY(calc(-1 * var(--altura-marca) / 2));
+  background: color-mix(in srgb, var(--fg) 25%, var(--bg) 75%);
+  width: 100%;
+  height: var(--altura-marca);
+}
+
+.reglaPuntoCentral {
+  background: var(--fg);
+}

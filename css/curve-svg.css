@@ -1,13 +1,3 @@
-:root {
-  --grid: #c8c8c8;
-  --curve-color: oklch(50.765% 0.22372 140.8);
-}
-
-:root.dark {
-  --grid: #666;
-  --curve-color: oklch(75.765% 0.22372 140.8);
-}
-
 svg {
   border: 1px solid var(--border);
   background: var(--bg);

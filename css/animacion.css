@@ -1,0 +1,41 @@
+#animador {
+  position: relative;
+  grid-column: 4;
+  width: var(--animador-width);
+  height: var(--canvas-size);
+}
+
+#animadorBolaShadow,
+#animadorBola {
+  position: absolute;
+  top: 0;
+  left: calc(calc(var(--animador-width) - var(--bola-size)) / 2);
+  animation-duration: 1.75s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-fill-mode: backwards;
+  animation-name: animacionBola;
+  border-radius: 50%;
+  background: var(--accent);
+  width: var(--bola-size);
+  height: var(--bola-size);
+}
+
+#animadorBolaShadow {
+  display: none;
+  opacity: 0.8;
+  z-index: -1;
+  animation-timing-function: linear;
+  box-sizing: border-box;
+  border: 3px solid var(--border);
+  background: var(--bg);
+}
+
+@keyframes animacionBola {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: calc(var(--canvas-size) - var(--bola-size));
+  }
+}

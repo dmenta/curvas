@@ -1,0 +1,51 @@
+:root {
+  /* generales */
+  --font-family: "Segoe UI", Arial, sans-serif;
+
+  --body-width: 100svw;
+  --body-height: 100svh;
+  --gap-width: 1rem;
+  --controles-width: 18rem;
+  --main-height: calc(var(--body-height) - calc(var(--gap-width) * 2));
+  --canvas-size: var(--main-height);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+
+  /* animacion */
+  --animador-width: 4rem;
+  --bola-size: calc(var(--animador-width) * 0.75);
+
+  /* regla */
+  --regla-width: 1rem;
+
+  /* colores tema */
+  --fg: currentColor;
+  --bg: #f9f9f9;
+  --border: #d8d8d8;
+  --accent: oklch(72.677% 0.10814 272.005);
+  --panel: #f3f3f3;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  /* colores handlers */
+  --h1-color: orange;
+  --h2-color: deepskyblue;
+
+  /* colores canvas */
+  --grid: #c8c8c8;
+  --curve-color: oklch(50.765% 0.22372 140.8);
+}
+
+:root.dark {
+  /* colores tema */
+  --bg: #404040;
+  --panel: #505050;
+  --border: #606060;
+  --accent: oklch(62.677% 0.10814 272.005);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  /* colores canvas */
+  --grid: #666;
+  --curve-color: oklch(75.765% 0.22372 140.8);
+}
