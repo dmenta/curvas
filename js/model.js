@@ -1,5 +1,5 @@
 import { draw } from "./ui.js";
-import { els } from "./elements.js";
+import { curvaEls } from "./elements.js";
 
 /**
  * @typedef {Object} Point
@@ -36,10 +36,10 @@ function updateUI(next, prev) {
 }
 
 function updateControls(next, prev) {
-  if (next.h1.x !== prev.h1.x) els.h1x.value = next.h1.x;
-  if (next.h1.y !== prev.h1.y) els.h1y.value = next.h1.y;
-  if (next.h2.x !== prev.h2.x) els.h2x.value = next.h2.x;
-  if (next.h2.y !== prev.h2.y) els.h2y.value = next.h2.y;
+  if (next.h1.x !== prev.h1.x) curvaEls.h1x.value = next.h1.x;
+  if (next.h1.y !== prev.h1.y) curvaEls.h1y.value = next.h1.y;
+  if (next.h2.x !== prev.h2.x) curvaEls.h2x.value = next.h2.x;
+  if (next.h2.y !== prev.h2.y) curvaEls.h2y.value = next.h2.y;
 }
 
 export function updateDraw(next) {

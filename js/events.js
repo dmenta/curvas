@@ -1,4 +1,4 @@
-import { els } from "./elements.js";
+import { curvaEls, els } from "./elements.js";
 import { model, updateModel } from "./model.js";
 import { Estado } from "./estado.js";
 import { applyTheme } from "./theme.js";
@@ -28,17 +28,17 @@ export function addEventListeners() {
 }
 
 function addSlidersEvents() {
-  els.h1x.addEventListener("input", () =>
-    updateModel({ ...model, h1: { ...model.h1, x: +els.h1x.value } }),
+  curvaEls.h1x.addEventListener("input", () =>
+    updateModel({ ...model, h1: { ...model.h1, x: +curvaEls.h1x.value } }),
   );
-  els.h1y.addEventListener("input", () =>
-    updateModel({ ...model, h1: { ...model.h1, y: +els.h1y.value } }),
+  curvaEls.h1y.addEventListener("input", () =>
+    updateModel({ ...model, h1: { ...model.h1, y: +curvaEls.h1y.value } }),
   );
-  els.h2x.addEventListener("input", () =>
-    updateModel({ ...model, h2: { ...model.h2, x: +els.h2x.value } }),
+  curvaEls.h2x.addEventListener("input", () =>
+    updateModel({ ...model, h2: { ...model.h2, x: +curvaEls.h2x.value } }),
   );
-  els.h2y.addEventListener("input", () =>
-    updateModel({ ...model, h2: { ...model.h2, y: +els.h2y.value } }),
+  curvaEls.h2y.addEventListener("input", () =>
+    updateModel({ ...model, h2: { ...model.h2, y: +curvaEls.h2y.value } }),
   );
 }
 
@@ -119,7 +119,7 @@ function addPointerEvents() {
     Estado.save(model);
   });
 
-  [els.h1x, els.h1y, els.h2x, els.h2y].forEach((el) =>
+  [curvaEls.h1x, curvaEls.h1y, curvaEls.h2x, curvaEls.h2y].forEach((el) =>
     el.addEventListener(
       "change",
       debounce(() => Estado.save(model), 100),

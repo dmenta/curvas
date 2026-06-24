@@ -1,4 +1,4 @@
-export const els = {
+export const curvaEls = {
   // Sliders h1
   /** @type {HTMLInputElement} */
   h1x: document.getElementById("h1x"),
@@ -9,7 +9,9 @@ export const els = {
   h2x: document.getElementById("h2x"),
   /** @type {HTMLInputElement} */
   h2y: document.getElementById("h2y"),
+};
 
+export const els = {
   // Checkboxes
   /** @type {HTMLInputElement} */
   showGrid: document.getElementById("showGrid"),
@@ -47,6 +49,7 @@ export const els = {
   // UI
   /** @type {HTMLDivElement} */
   info: document.getElementById("info"),
+
   /** @type {HTMLSelectElement} */
   theme: document.getElementById("theme"),
   /** @type {HTMLMetaElement} */
@@ -63,8 +66,6 @@ export const els = {
   /** @type {HTMLButtonElement} */
   guardarCurva: document.getElementById("guardarCurva"),
 
-  /** @type {HTMLDivElement} */
-  animador: document.getElementById("animador"),
   /** @type {HTMLDivElement} */
   animadorBola: document.getElementById("animadorBola"),
   /** @type {HTMLDivElement} */
