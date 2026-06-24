@@ -25,7 +25,6 @@
   --accent: oklch(62.677% 0.10814 272.005);
 }
 
-#stepsCard,
 #info,
 label:has(#showHandles) {
   display: none;
