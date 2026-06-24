@@ -69,4 +69,6 @@ export const els = {
   animador: document.getElementById("animador"),
   /** @type {HTMLDivElement} */
   animadorBola: document.getElementById("animadorBola"),
+  /** @type {HTMLDivElement} */
+  regla: document.getElementById("regla"),
 };

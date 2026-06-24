@@ -5,6 +5,7 @@
   --gap-width: 16px;
   --controles-width: 300px;
   --animador-width: 64px;
+  --regla-width: 16px;
   --main-height: calc(var(--body-height) - calc(var(--gap-width) * 2));
   --canvas-size: var(--main-height);
   --bola-size: calc(var(--animador-width) * 0.75);
@@ -38,10 +39,10 @@ body {
 
 main {
   display: grid;
-  grid-template-columns: var(--controles-width) var(--canvas-size) var(
-      --animador-width
-    );
-  grid-template-areas: "controles canvas animador";
+  grid-template-columns:
+    var(--controles-width) var(--canvas-size) var(--regla-width)
+    var(--animador-width);
+  grid-template-areas: "controles canvas regla animador";
   gap: var(--gap-width);
   margin: var(--gap-width) auto;
   width: fit-content;
@@ -61,61 +62,49 @@ main {
 }
 
 #animador {
-  display: flex;
   position: relative;
   grid-area: animador;
-  align-items: center;
   width: var(--animador-width);
-  height: calc(var(--canvas-size) * 0.75);
-  overflow: hidden;
+  height: var(--canvas-size);
 }
 
-/* The animation code */
-@keyframes animacionPulso {
-  0% {
-    filter: invert(1);
-  }
-  2% {
-    filter: initial;
-  }
-  48% {
-    filter: initial;
-  }
-  50% {
-    filter: invert(1);
-  }
-  52% {
-    filter: initial;
-  }
-  98% {
-    filter: initial;
-  }
-  100% {
-    filter: invert(1);
-  }
+#regla {
+  position: relative;
+  grid-area: regla;
+  width: var(--regla-width);
+  height: var(--canvas-size);
 }
-/* The animation code */
+
+.reglaPunto {
+  --altura-marca: 2px;
+  position: absolute;
+  transform: translateY(calc(-1 * var(--altura-marca) / 2));
+  background: color-mix(in srgb, var(--fg) 25%, var(--bg) 75%);
+  width: 100%;
+  height: var(--altura-marca);
+}
+
+.reglaPuntoCentral {
+  background: var(--fg);
+}
+
 @keyframes animacionBola {
   0% {
     top: 0;
   }
-  50% {
-    top: calc(100% - calc(var(--bola-size)));
-  }
   100% {
-    top: 0;
+    top: calc(var(--canvas-size) - var(--bola-size));
   }
 }
 
 #animadorBolaShadow,
 #animadorBola {
-  --curva-timing: linear;
   position: absolute;
   top: 0;
   left: calc(calc(var(--animador-width) - var(--bola-size)) / 2);
-  transform: translateY(0);
   animation-duration: 1.75s;
   animation-iteration-count: infinite;
+  animation-direction: alternate;
   animation-fill-mode: backwards;
   border-radius: 50%;
   background: var(--accent);
@@ -124,17 +113,17 @@ main {
 }
 
 #animadorBola {
-  animation-timing-function: var(--curva-timing), steps(1, end);
-  animation-name: animacionBola, animacionPulso;
+  animation-name: animacionBola;
 }
 
 #animadorBolaShadow {
-  opacity: 0.3;
+  display: none;
+  opacity: 0.8;
   z-index: -1;
   animation-timing-function: linear;
   animation-name: animacionBola;
   box-sizing: border-box;
-  border: 4px solid var(--accent);
+  border: 3px solid var(--border);
   background: var(--bg);
 }
 
