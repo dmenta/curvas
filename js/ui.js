@@ -72,7 +72,7 @@ export async function copyWithFeedback(button, text) {
   await navigator.clipboard.writeText(text);
   const original = button.textContent;
 
-  button.textContent = "✓ Copiado";
+  button.textContent = "Copiado";
   button.classList.add("copied");
 
   setTimeout(() => {

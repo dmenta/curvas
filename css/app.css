@@ -1,0 +1,152 @@
+:root {
+  /* generales */
+  --body-width: 100svw;
+  --body-height: 100svh;
+  --gap-width: 16px;
+  --controles-width: 300px;
+  --animador-height: 32px;
+  --main-height: calc(var(--body-height) - calc(var(--gap-width) * 2));
+  --canvas-size: calc(
+    var(--main-height) - var(--animador-height) - var(--gap-width)
+  );
+  --main-width: calc(
+    var(--controles-width) + var(--canvas-size) + var(--gap-width)
+  );
+
+  /* colores tema */
+  --panel: #f3f3f3;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  --h1-color: orange;
+  --h2-color: deepskyblue;
+}
+
+:root.dark {
+  /* colores tema */
+  --bg: #404040;
+  --panel: #505050;
+  --border: #606060;
+  --accent: oklch(62.677% 0.10814 272.005);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+#info,
+label:has(#showHandles) {
+  display: none;
+}
+
+body {
+  width: var(--body-width);
+  height: var(--body-height);
+}
+
+main {
+  display: grid;
+  grid-template-rows: var(--canvas-size) var(--animador-height);
+  grid-template-columns: var(--controles-width) var(--canvas-size);
+  grid-template-areas:
+    "controles canvas"
+    "controles animador";
+  gap: var(--gap-width);
+  margin: var(--gap-width) auto;
+  width: var(--main-width);
+  height: var(--main-height);
+}
+
+#controles > div {
+  margin-bottom: calc(var(--gap-width) / 2);
+}
+
+#controles {
+  grid-area: controles;
+}
+
+#canvas {
+  grid-area: canvas;
+  width: var(--canvas-size);
+}
+
+#animador {
+  grid-area: animador;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  height: var(--animador-height);
+  overflow: hidden;
+}
+
+#animadorBola {
+  border-radius: 50%;
+  background: var(--accent);
+  width: 24px;
+  height: 24px;
+}
+
+#guardarCurva {
+  flex: 0 1 fit-content;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: calc(var(--gap-width) / 2);
+}
+
+.card {
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  padding: calc(var(--gap-width) * 0.8) var(--gap-width);
+  width: auto;
+}
+
+.card > * {
+  margin-bottom: calc(var(--gap-width) / 2);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+label:has(input[type="range"]) {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+input[type="range"].h1 {
+  --base-color: var(--h1-color);
+}
+
+input[type="range"].h2 {
+  --base-color: var(--h2-color);
+}
+
+button.copied {
+  background-color: color(from var(--accent) srgb r g b / 0.2);
+  pointer-events: none;
+}
+
+.tooltip {
+  display: none;
+  position: fixed;
+  border-radius: 6px;
+  background: #000;
+  padding: 6px 8px;
+  pointer-events: none;
+  color: #fff;
+  font-size: 12px;
+}
+
+.small {
+  opacity: 0.85;
+  font-size: 12px;
+}
+
+.hidden {
+  display: none;
+}
