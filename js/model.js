@@ -11,14 +11,12 @@ import { els } from "./elements.js";
  * @typedef {Object} CurveState
  * @property {Point} h1
  * @property {Point} h2
- * @property {number} steps
  */
 
 /** @type {CurveState} */
 export let model = {
   h1: { x: 30, y: 90 },
   h2: { x: 60, y: 20 },
-  steps: 20,
 };
 
 /** @type {Array<function(CurveState, CurveState): void>} */
@@ -41,7 +39,6 @@ function updateControls(next, prev) {
   if (next.h1.y !== prev.h1.y) els.h1y.value = next.h1.y;
   if (next.h2.x !== prev.h2.x) els.h2x.value = next.h2.x;
   if (next.h2.y !== prev.h2.y) els.h2y.value = next.h2.y;
-  if (next.steps !== prev.steps) els.steps.value = next.steps;
 }
 
 export function updateDraw(next) {

@@ -15,13 +15,20 @@ export function sonEstadosIguales(a, b) {
   if (!a || !b) {
     return false;
   }
-  return (
-    a.h1.x === b.h1.x &&
-    a.h1.y === b.h1.y &&
-    a.h2.x === b.h2.x &&
-    a.h2.y === b.h2.y &&
-    a.steps === b.steps
-  );
+  return sonPointsIguales(a.h1, b.h1) && sonPointsIguales(a.h2, b.h2);
+}
+
+/**
+ *
+ * @param {Point|undefined} a
+ * @param {Point|undefined} b
+ * @returns {boolean}
+ */
+export function sonPointsIguales(a, b) {
+  if (!a || !b) {
+    return false;
+  }
+  return a.x === b.x && a.y === b.y;
 }
 
 /**

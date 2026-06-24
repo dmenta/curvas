@@ -1,24 +1,28 @@
 :root {
-  --bg: #ffffff;
-  --fg: currentColor;
-  --panel: #f5f5f5;
-  --border: #d8d8d8;
-  --accent: oklch(72.677% 0.10814 272.005);
-  --h1-color: orange;
-  --h2-color: deepskyblue;
-  --font-family: "Segoe UI", Arial, sans-serif;
+  /* generales */
   --controles-width: 300px;
   --main-width: 960px;
   --gap-width: 16px;
+  --font-family: "Segoe UI", Arial, sans-serif;
+
+  /* colores comunes */
+  --fg: currentColor;
+  --h1-color: orange;
+  --h2-color: deepskyblue;
+
+  /* colores tema */
+  --bg: #ffffff;
+  --panel: #f5f5f5;
+  --border: #d8d8d8;
+  --accent: oklch(72.677% 0.10814 272.005);
 }
 
 :root.dark {
+  /* colores tema */
   --bg: #1e1e1e;
   --panel: #2c2c2c;
   --border: #444;
   --accent: oklch(62.677% 0.10814 272.005);
-  --h1-color: orange;
-  --h2-color: deepskyblue;
 }
 
 #stepsCard,

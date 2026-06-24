@@ -1,15 +1,11 @@
 :root {
   --grid: #c8c8c8;
   --curve-color: oklch(50.765% 0.22372 140.8);
-  --point-color: oklch(70.552% 0.15701 251.023);
-  --segment-color: #303030;
 }
 
 :root.dark {
   --grid: #666;
   --curve-color: oklch(75.765% 0.22372 140.8);
-  --point-color: oklch(65.552% 0.15701 251.023);
-  --segment-color: #c8c8c8;
 }
 
 svg {
@@ -24,23 +20,9 @@ text {
   fill: var(--fg);
 }
 
-#points {
-  circle {
-    fill: var(--grid);
-    stroke: var(--curve-color);
-    stroke-width: 0.375;
-    r: 0.625;
-  }
-}
-
 #realCurve {
   stroke: var(--curve-color);
   stroke-width: 0.5;
-}
-
-#segments {
-  stroke: var(--segment-color);
-  stroke-width: 0.25;
 }
 
 .grid-min-line {

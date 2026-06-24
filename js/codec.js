@@ -14,7 +14,6 @@ export const CurveCodec = {
       h1y: state.h1.y,
       h2x: state.h2.x,
       h2y: state.h2.y,
-      steps: state.steps,
     };
   },
 
@@ -26,7 +25,6 @@ export const CurveCodec = {
     return {
       h1: { x: +params.h1x, y: +params.h1y },
       h2: { x: +params.h2x, y: +params.h2y },
-      steps: +params.steps || 20,
     };
   },
 };
